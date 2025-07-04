@@ -6,7 +6,7 @@ body {
 }
 
 .hero-image {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('C:\Users\marcelo.madureira\Documents\Tribus\TENAZ\tenaz-vite\public\Images\Imagem1.png');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/Imagem1.png');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
