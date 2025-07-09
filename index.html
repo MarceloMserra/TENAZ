@@ -13,9 +13,10 @@
             theme: {
                 extend: {
                     colors: {
-                        'spotify-green': '#1A9E4D',
-                        'spotify-dark': '#191414',
-                        'spotify-light': '#282828',
+                        'tenaz-gold': '#D8A63A',
+                        'tenaz-purple': '#240f2e',
+                        'tenaz-dark-bg': '#191414',
+                        'tenaz-light-bg': '#282828',
                     },
                     fontFamily: {
                         'urban': ['Urbanist', 'sans-serif'],
@@ -28,18 +29,15 @@
 <body>
     <header class="fixed w-full bg-black bg-opacity-90 z-50 shadow-lg">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="#home" class="flex items-center">
-                <div class="w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center mr-2">
-                    <i class="fas fa-microphone-alt text-black text-xl"></i>
-                </div>
-                <span class="text-2xl font-bold text-white">TENAZ</span>
+            <a href="#home">
+                <img src="/images/logo.png" alt="Logo TENAZ" class="h-12 w-auto">
             </a>
             
             <nav class="hidden md:flex space-x-8">
-                <a href="#home" class="menu-item text-white hover:text-spotify-green transition duration-300">Início</a>
-                <a href="#about" class="menu-item text-white hover:text-spotify-green transition duration-300">Sobre</a>
-                <a href="#workshops" class="menu-item text-white hover:text-spotify-green transition duration-300">Oficinas</a>
-                <a href="#contact" class="menu-item text-white hover:text-spotify-green transition duration-300">Contato</a>
+                <a href="#home" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Início</a>
+                <a href="#about" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Sobre</a>
+                <a href="#workshops" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Oficinas</a>
+                <a href="#contact" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Contato</a>
             </nav>
             
             <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
@@ -49,10 +47,10 @@
         
         <div id="mobile-menu" class="mobile-menu hidden md:hidden bg-black w-full py-4 px-4">
             <div class="flex flex-col space-y-4">
-                <a href="#home" class="menu-item text-white hover:text-spotify-green transition duration-300">Início</a>
-                <a href="#about" class="menu-item text-white hover:text-spotify-green transition duration-300">Sobre</a>
-                <a href="#workshops" class="menu-item text-white hover:text-spotify-green transition duration-300">Oficinas</a>
-                <a href="#contact" class="menu-item text-white hover:text-spotify-green transition duration-300">Contato</a>
+                <a href="#home" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Início</a>
+                <a href="#about" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Sobre</a>
+                <a href="#workshops" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Oficinas</a>
+                <a href="#contact" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Contato</a>
             </div>
         </div>
     </header>
@@ -60,28 +58,28 @@
     <section id="home" class="hero-image flex items-center justify-center text-center px-4" style="height: 50vh;">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl md:text-4xl font-bold mb-4 text-white" data-aos="fade-up" data-aos-delay="100">
-                <span class="text-spotify-green">A quebrada tem voz.</span>
+                <span class="text-tenaz-gold">A quebrada tem voz.</span>
                 <span>A quebrada tem vez.</span>
             </h1>
             <p class="text-lg md:text-xl mb-6 text-gray-300" data-aos="fade-up" data-aos-delay="200">TENAZ - A voz das quebradas</p>
-            <a href="#video" class="btn-spotify inline-block bg-spotify-green text-black font-bold py-2 px-6 rounded-full text-md hover:bg-opacity-90" data-aos="fade-up" data-aos-delay="300">
+            <a href="#video" class="btn-spotify inline-block bg-tenaz-purple text-white font-bold py-2 px-6 rounded-full text-md hover:bg-opacity-90" data-aos="fade-up" data-aos-delay="300">
                 Assista agora
             </a>
         </div>
     </section>
 
-    <section id="video" class="pt-0 pb-8 bg-black px-4">
+    <section id="video" class="pt-0 pb-8 bg-tenaz-dark-bg px-4">
         <div class="container mx-auto max-w-4xl">
-            <h2 class="text-3xl font-bold mb-8 text-center text-spotify-green" data-aos="fade-up">CONHEÇA O TENAZ</h2>
+            <h2 class="text-3xl font-bold mb-8 text-center text-tenaz-gold" data-aos="fade-up">CONHEÇA O TENAZ</h2>
             <div class="video-container rounded-lg overflow-hidden shadow-lg" data-aos="fade-up" data-aos-delay="200">
                 <iframe src="https://player.cloudinary.com/embed/?cloud_name=dabstrkql&public_id=20250704_1_hurtgq&profile=cld-default" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
     </section>
 
-    <section id="about" class="py-16 bg-spotify-light px-4">
+    <section id="about" class="py-16 bg-tenaz-light-bg px-4">
         <div class="container mx-auto max-w-4xl">
-            <h2 class="text-3xl font-bold mb-8 text-center text-spotify-green" data-aos="fade-up">SOBRE O PROJETO</h2>
+            <h2 class="text-3xl font-bold mb-8 text-center text-tenaz-gold" data-aos="fade-up">SOBRE O PROJETO</h2>
             <div class="grid md:grid-cols-2 gap-8 items-center">
                 <div data-aos="fade-up" data-aos-delay="100">
                     <p class="mb-4 text-gray-300">E se a sua história virasse música? E se aquele sonho de estúdio, clipe, palco, virasse realidade? E se, em vez de correr do corre, você tivesse onde correr pra construir seu futuro com arte?</p>
@@ -93,7 +91,7 @@
                     <p class="mb-4 text-gray-300">Esse projeto é da quebrada, pra quebrada e pela quebrada. É sobre levantar quem tava desacreditado. É sobre mostrar que talento não tem CEP.</p>
                     <p class="mb-4 text-gray-300">🎤 Se você sente que carrega um som dentro de você, cola com a gente. Aqui você vai ser ouvido, acolhido, respeitado e impulsionado.</p>
                     <p class="text-gray-300">Porque quem é da quebrada não abaixa a cabeça — rima, cria, transforma. E com o TENAZ, vai mais longe.</p>
-                    <p class="text-spotify-green font-bold mt-4">TENAZ – A quebrada tem voz. E agora, vai ecoar mais alto do que nunca.</p>
+                    <p class="text-tenaz-gold font-bold mt-4">TENAZ – A quebrada tem voz. E agora, vai ecoar mais alto do que nunca.</p>
                 </div>
                 <div class="flex justify-center" data-aos="fade-up" data-aos-delay="300">
                     <img src="/images/Imagem2.png" 
@@ -104,27 +102,27 @@
         </div>
     </section>
 
-    <section id="workshops" class="py-16 bg-black px-4">
+    <section id="workshops" class="py-16 bg-tenaz-dark-bg px-4">
         <div class="container mx-auto max-w-4xl">
-            <h2 class="text-3xl font-bold mb-8 text-center text-spotify-green" data-aos="fade-up">OFICINAS</h2>
+            <h2 class="text-3xl font-bold mb-8 text-center text-tenaz-gold" data-aos="fade-up">OFICINAS</h2>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-spotify-light p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-16 h-16 bg-spotify-green rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <i class="fas fa-microphone text-black text-2xl"></i>
+                <div class="bg-tenaz-light-bg p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-tenaz-purple rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-microphone text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-center text-white">RAP & POESIA</h3>
                     <p class="text-gray-400 text-center">Oficinas de escrita criativa, rimas e performance vocal para quem quer se expressar através do rap e da poesia.</p>
                 </div>
-                <div class="bg-spotify-light p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-16 h-16 bg-spotify-green rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <i class="fas fa-paint-brush text-black text-2xl"></i>
+                <div class="bg-tenaz-light-bg p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-tenaz-purple rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-paint-brush text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-center text-white">GRAFITE & ARTE URBANA</h3>
                     <p class="text-gray-400 text-center">Técnicas de grafite, stencil e arte de rua para transformar muros em telas de expressão.</p>
                 </div>
-                <div class="bg-spotify-light p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-16 h-16 bg-spotify-green rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <i class="fas fa-video text-black text-2xl"></i>
+                <div class="bg-tenaz-light-bg p-6 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-16 h-16 bg-tenaz-purple rounded-full flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-video text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-3 text-center text-white">AUDIOVISUAL</h3>
                     <p class="text-gray-400 text-center">Produção de vídeos, fotografia e edição para contar histórias através das lentes.</p>
@@ -133,42 +131,42 @@
         </div>
     </section>
 
-    <section id="contact" class="py-16 bg-black px-4">
+    <section id="contact" class="py-16 bg-tenaz-dark-bg px-4">
         <div class="container mx-auto max-w-2xl">
-            <h2 class="text-3xl font-bold mb-2 text-center text-spotify-green" data-aos="fade-up">QUER FAZER PARTE DO PROJETO?</h2>
+            <h2 class="text-3xl font-bold mb-2 text-center text-tenaz-gold" data-aos="fade-up">QUER FAZER PARTE DO PROJETO?</h2>
             <p class="text-xl mb-8 text-center text-gray-300" data-aos="fade-up" data-aos-delay="100">Se inscreva agora!</p>
             
-            <form id="registration-form" action="https://formspree.io/f/mnnvrevj" method="POST" class="bg-spotify-light p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
-                <div id="form-success" class="hidden mb-6 p-4 bg-green-900 text-green-100 rounded">
+            <form id="registration-form" action="https://formspree.io/f/mnnvrevj" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                <div id="form-success" class="hidden mb-6 p-4 bg-tenaz-gold text-black font-semibold rounded">
                     Cadastro enviado com sucesso! Em breve entraremos em contato.
                 </div>
                 
                 <div class="mb-4">
                     <label for="name" class="block mb-2 text-gray-300">Nome completo</label>
-                    <input type="text" id="name" name="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-spotify-green">
+                    <input type="text" id="name" name="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
                 </div>
                 
                 <div class="mb-4">
                     <label for="email" class="block mb-2 text-gray-300">E-mail</label>
-                    <input type="email" id="email" name="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-spotify-green">
+                    <input type="email" id="email" name="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
                 </div>
                 
                 <div class="mb-4">
                     <label for="phone" class="block mb-2 text-gray-300">Telefone</label>
-                    <input type="tel" id="phone" name="phone" required pattern="[0-9]{11}" placeholder="11999999999" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-spotify-green">
+                    <input type="tel" id="phone" name="phone" required pattern="[0-9]{11}" placeholder="11999999999" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
                 </div>
                 
                 <div class="mb-4">
                     <label for="address" class="block mb-2 text-gray-300">Endereço completo</label>
-                    <input type="text" id="address" name="address" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-spotify-green">
+                    <input type="text" id="address" name="address" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
                 </div>
                 
                 <div class="mb-6">
                     <label for="cpf" class="block mb-2 text-gray-300">CPF (apenas números)</label>
-                    <input type="text" id="cpf" name="cpf" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-spotify-green">
+                    <input type="text" id="cpf" name="cpf" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
                 </div>
                 
-                <button type="submit" class="btn-spotify w-full bg-spotify-green text-black font-bold py-3 px-4 rounded-full hover:bg-opacity-90">
+                <button type="submit" class="btn-spotify w-full bg-tenaz-purple text-white font-bold py-3 px-4 rounded-full hover:bg-opacity-90">
                     Quero participar!
                 </button>
             </form>
@@ -178,30 +176,27 @@
     <footer class="bg-black py-8 px-4 border-t border-gray-800">
         <div class="container mx-auto max-w-4xl">
             <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0 flex items-center">
-                    <div class="w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center mr-2">
-                        <i class="fas fa-microphone-alt text-black text-xl"></i>
-                    </div>
-                    <span class="text-2xl font-bold text-white">TENAZ</span>
+                <div class="mb-4 md:mb-0">
+                    <img src="/images/logo.png" alt="Logo TENAZ" class="h-12 w-auto">
                 </div>
                 
                 <div class="flex space-x-6 mb-4 md:mb-0">
-                    <a href="#" class="text-gray-400 hover:text-spotify-green transition duration-300">
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
                         <i class="fab fa-instagram text-2xl"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-spotify-green transition duration-300">
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
                         <i class="fab fa-youtube text-2xl"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-spotify-green transition duration-300">
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
                         <i class="fab fa-spotify text-2xl"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-spotify-green transition duration-300">
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
                         <i class="fab fa-tiktok text-2xl"></i>
                     </a>
                 </div>
                 
                 <div class="text-gray-400 text-sm">
-                    &copy; 2023 TENAZ - A voz das quebradas. Todos os direitos reservados.
+                    &copy; 2025 TENAZ - A voz das quebradas. Todos os direitos reservados.
                 </div>
             </div>
         </div>
@@ -211,4 +206,3 @@
     <script type="module" src="/src/main.js"></script>
 </body>
 </html>
-
