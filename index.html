@@ -13,10 +13,13 @@
             theme: {
                 extend: {
                     colors: {
-                        'tenaz-gold': '#D8A63A',
-                        'tenaz-purple': '#240f2e',
-                        'tenaz-dark-bg': '#191414',
-                        'tenaz-light-bg': '#282828',
+                        // Cores douradas revertidas para as anteriores, roxo mantido
+                        'tenaz-gold': '#e9ac15', // Dourado principal anterior
+                        'tenaz-gold-start': '#D49B00', // Início do gradiente dourado anterior
+                        'tenaz-gold-end': '#FFC83D', // Fim do gradiente dourado anterior
+                        'tenaz-purple': '#5e1999', // Roxo especificado (mantido)
+                        'tenaz-dark-bg': '#191414', // Mantido
+                        'tenaz-light-bg': '#282828', // Mantido
                     },
                     fontFamily: {
                         'urban': ['Urbanist', 'sans-serif'],
@@ -25,11 +28,63 @@
             }
         }
     </script>
+    <style>
+        /* Estilo para a imagem de fundo da seção hero */
+        .hero-image {
+            /* ATENÇÃO: Substitua 'https://placehold.co/1920x600/191414/ffffff?text=SUA_IMAGEM_AQUI' pelo URL da sua imagem de fundo real. */
+            /* Se for a imagem da logo que você enviou, você precisará hospedá-la ou colocá-la em um caminho acessível no seu projeto. */
+            background-image: url('https://placehold.co/1920x600/191414/ffffff?text=IMAGEM_DE_FUNDO'); 
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Overlay escuro para a imagem de fundo */
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6); /* Escurece a imagem para o texto se destacar */
+            z-index: 1;
+        }
+
+        /* Garante que o conteúdo da hero section fique acima do overlay */
+        .hero-image > div {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Estilo para o container de vídeo responsivo */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Estilo para o menu mobile */
+        .mobile-menu {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
 </head>
-<body>
+<body class="font-urban bg-tenaz-dark-bg text-white">
     <header class="fixed w-full bg-black bg-opacity-90 z-50 shadow-lg">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="#home">
+                <!-- Certifique-se de que o caminho da sua logo está correto. -->
                 <img src="/images/logo.png" alt="Logo TENAZ" class="h-10 w-auto">
             </a>
             
@@ -58,11 +113,12 @@
     <section id="home" class="hero-image flex items-center justify-center text-center px-4" style="height: 50vh;">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl md:text-4xl font-bold mb-4 text-white" data-aos="fade-up" data-aos-delay="100">
-                <span class="text-tenaz-gold">A quebrada tem voz.</span>
+                <!-- Aplicação do gradiente no texto "A quebrada tem voz." -->
+                <span class="bg-gradient-to-r from-tenaz-gold-start to-tenaz-gold-end bg-clip-text text-transparent">A quebrada tem voz.</span>
                 <span>A quebrada tem vez.</span>
             </h1>
             <p class="text-lg md:text-xl mb-6 text-gray-300" data-aos="fade-up" data-aos-delay="200">TENAZ - A voz das quebradas</p>
-            <a href="#video" class="btn-spotify inline-block bg-tenaz-purple text-white font-bold py-2 px-6 rounded-full text-md hover:bg-opacity-90" data-aos="fade-up" data-aos-delay="300">
+            <a href="#video" class="btn-spotify inline-block bg-tenaz-purple text-white font-bold py-2 px-6 rounded-full text-md hover:bg-opacity-90 transition duration-300" data-aos="fade-up" data-aos-delay="300">
                 Assista agora
             </a>
         </div>
@@ -94,9 +150,10 @@
                     <p class="text-tenaz-gold font-bold mt-4">TENAZ – A quebrada tem voz. E agora, vai ecoar mais alto do que nunca.</p>
                 </div>
                 <div class="flex justify-center" data-aos="fade-up" data-aos-delay="300">
+                    <!-- Certifique-se de que o caminho da sua imagem está correto. -->
                     <img src="/images/Imagem2.png" 
-                         alt="Galera da quebrada no estúdio TENAZ" 
-                         class="w-full h-64 md:h-80 object-cover rounded-lg shadow-lg">
+                            alt="Galera da quebrada no estúdio TENAZ" 
+                            class="w-full h-64 md:h-80 object-cover rounded-lg shadow-lg">
                 </div>
             </div>
         </div>
@@ -143,30 +200,30 @@
                 
                 <div class="mb-4">
                     <label for="name" class="block mb-2 text-gray-300">Nome completo</label>
-                    <input type="text" id="name" name="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
+                    <input type="text" id="name" name="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
                     <label for="email" class="block mb-2 text-gray-300">E-mail</label>
-                    <input type="email" id="email" name="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
+                    <input type="email" id="email" name="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
                     <label for="phone" class="block mb-2 text-gray-300">Telefone</label>
-                    <input type="tel" id="phone" name="phone" required pattern="[0-9]{11}" placeholder="11999999999" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
+                    <input type="tel" id="phone" name="phone" required pattern="[0-9]{11}" placeholder="11999999999" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
                     <label for="address" class="block mb-2 text-gray-300">Endereço completo</label>
-                    <input type="text" id="address" name="address" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
+                    <input type="text" id="address" name="address" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-6">
                     <label for="cpf" class="block mb-2 text-gray-300">CPF (apenas números)</label>
-                    <input type="text" id="cpf" name="cpf" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold">
+                    <input type="text" id="cpf" name="cpf" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
-                <button type="submit" class="btn-spotify w-full bg-tenaz-purple text-white font-bold py-3 px-4 rounded-full hover:bg-opacity-90">
+                <button type="submit" class="btn-spotify w-full bg-tenaz-purple text-white font-bold py-3 px-4 rounded-full hover:bg-opacity-90 transition duration-300">
                     Quero participar!
                 </button>
             </form>
@@ -177,6 +234,7 @@
         <div class="container mx-auto max-w-4xl">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
+                    <!-- Certifique-se de que o caminho da sua logo está correto. -->
                     <img src="/images/logo.png" alt="Logo TENAZ" class="h-10 w-auto">
                 </div>
                 
@@ -203,6 +261,55 @@
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script type="module" src="/src/main.js"></script>
+    <script>
+        // Inicializa AOS (Animate On Scroll)
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+
+        // Lógica para o menu mobile
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fechar menu mobile ao clicar em um item (para navegação suave)
+        document.querySelectorAll('#mobile-menu .menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Lógica para o formulário de contato
+        const form = document.getElementById('registration-form');
+        const formSuccess = document.getElementById('form-success');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Previne o envio padrão do formulário
+
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                form.reset(); // Limpa o formulário
+                formSuccess.classList.remove('hidden'); // Exibe a mensagem de sucesso
+                setTimeout(() => {
+                    formSuccess.classList.add('hidden'); // Esconde a mensagem após alguns segundos
+                }, 5000);
+            } else {
+                // Em caso de erro, você pode adicionar uma mensagem de erro aqui
+                console.error('Erro ao enviar o formulário.');
+            }
+        });
+    </script>
+    <!-- O script main.js não foi incluído, pois o conteúdo não foi fornecido. -->
+    <!-- <script type="module" src="/src/main.js"></script> -->
 </body>
 </html>

@@ -1,8 +1,9 @@
 body {
-    font-family: 'Urban', sans-serif;
+    font-family: 'Urbanist', sans-serif; /* Usando Urbanist conforme o link */
     background-color: #191414; /* tenaz-dark-bg */
     color: white;
     scroll-behavior: smooth;
+    overflow-x: hidden; /* Garante que não haja scroll horizontal */
 }
 
 .hero-image {
@@ -29,7 +30,7 @@ body {
 }
 
 .menu-item:hover {
-    color: #D8A63A; /* tenaz-gold */
+    color: #e9ac15; /* tenaz-gold: #e9ac15 */
     transform: scale(1.05);
 }
 
@@ -39,13 +40,14 @@ body {
 
 .btn-spotify:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(216, 166, 58, 0.5); /* Sombra dourada */
+    /* Sombra dourada ajustada para #e9ac15 */
+    box-shadow: 0 0 15px rgba(233, 172, 21, 0.5); 
 }
 
 /* REGRA CORRIGIDA ABAIXO */
 input, textarea {
     background-color: #191414;
-    border: 2px solid #D8A63A; /* <-- Borda dourada (corrigido) */
+    border: 2px solid #e9ac15; /* <-- Borda dourada (usando #e9ac15) */
     color: white;
     border-radius: 0.375rem;
 }
