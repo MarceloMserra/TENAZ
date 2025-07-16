@@ -13,13 +13,12 @@
             theme: {
                 extend: {
                     colors: {
-                        // Cores douradas revertidas para as anteriores, roxo mantido
-                        'tenaz-gold': '#e9ac15', // Dourado principal anterior
-                        'tenaz-gold-start': '#D49B00', // Início do gradiente dourado anterior
-                        'tenaz-gold-end': '#FFC83D', // Fim do gradiente dourado anterior
-                        'tenaz-purple': '#5e1999', // Roxo especificado (mantido)
-                        'tenaz-dark-bg': '#191414', // Mantido
-                        'tenaz-light-bg': '#282828', // Mantido
+                        'tenaz-gold': '#e9ac15',
+                        'tenaz-gold-start': '#D49B00',
+                        'tenaz-gold-end': '#FFC83D',
+                        'tenaz-purple': '#5e1999',
+                        'tenaz-dark-bg': '#191414',
+                        'tenaz-light-bg': '#282828',
                     },
                     fontFamily: {
                         'urban': ['Urbanist', 'sans-serif'],
@@ -31,8 +30,7 @@
     <style>
         /* Estilo para a imagem de fundo da seção hero */
         .hero-image {
-            /* ATENÇÃO: Substitua 'https://placehold.co/1920x600/191414/ffffff?text=SUA_IMAGEM_AQUI' pelo URL da sua imagem de fundo real. */
-            /* Se for a imagem da logo que você enviou, você precisará hospedá-la ou colocá-la em um caminho acessível no seu projeto. */
+            /* Caminho original da imagem restaurado */
             background-image: url('/images/Imagem1.png'); 
             background-size: cover;
             background-position: center;
@@ -81,11 +79,23 @@
     </style>
 </head>
 <body class="font-urban bg-tenaz-dark-bg text-white">
+    <!-- ===== HEADER MODIFICADO ===== -->
     <header class="fixed w-full bg-black bg-opacity-90 z-50 shadow-lg">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <!-- 
+            MODIFICAÇÃO PARA LAYOUT MOBILE: 
+            - 'justify-center' centraliza a logo em telas pequenas.
+            - 'md:justify-between' mantém o layout original em telas maiores.
+            - 'relative' é necessário para posicionar o botão de menu.
+        -->
+        <div class="container mx-auto px-4 py-3 flex items-center justify-center md:justify-between relative">
             <a href="#home">
-                <!-- Certifique-se de que o caminho da sua logo está correto. -->
-                <img src="/images/logo.png" alt="Logo TENAZ" class="h-20 w-auto">
+                <!-- 
+                    MODIFICAÇÃO PARA LAYOUT MOBILE: 
+                    - 'h-24' aumenta a altura da logo em telas pequenas.
+                    - 'md:h-20' mantém a altura original em telas maiores.
+                    - O caminho original da logo foi restaurado.
+                -->
+                <img src="/images/logo.png" alt="Logo TENAZ" class="h-24 md:h-20 w-auto">
             </a>
             
             <nav class="hidden md:flex space-x-8">
@@ -95,7 +105,11 @@
                 <a href="#contact" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Contato</a>
             </nav>
             
-            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+            <!-- 
+                MODIFICAÇÃO PARA LAYOUT MOBILE: 
+                - 'absolute' posiciona o botão de menu sem afetar a centralização da logo.
+            -->
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-1/2 -translate-y-1/2">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </div>
@@ -113,7 +127,6 @@
     <section id="home" class="hero-image flex items-center justify-center text-center px-4" style="height: 50vh;">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl md:text-4xl font-bold mb-4 text-white" data-aos="fade-up" data-aos-delay="100">
-                <!-- Aplicação do gradiente no texto "A quebrada tem voz." -->
                 <span class="bg-gradient-to-r from-tenaz-gold-start to-tenaz-gold-end bg-clip-text text-transparent">A quebrada tem voz.</span>
                 <span>A quebrada tem vez.</span>
             </h1>
@@ -150,10 +163,10 @@
                     <p class="text-tenaz-gold font-bold mt-4">TENAZ – A quebrada tem voz. E agora, vai ecoar mais alto do que nunca.</p>
                 </div>
                 <div class="flex justify-center" data-aos="fade-up" data-aos-delay="300">
-                    <!-- Certifique-se de que o caminho da sua imagem está correto. -->
+                    <!-- Caminho original da imagem restaurado. -->
                     <img src="/images/Imagem2.png" 
-                            alt="Galera da quebrada no estúdio TENAZ" 
-                            class="w-full h-64 md:h-80 object-cover rounded-lg shadow-lg">
+                         alt="Galera da quebrada no estúdio TENAZ" 
+                         class="w-full h-64 md:h-80 object-cover rounded-lg shadow-lg">
                 </div>
             </div>
         </div>
@@ -234,7 +247,7 @@
         <div class="container mx-auto max-w-4xl">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
-                    <!-- Certifique-se de que o caminho da sua logo está correto. -->
+                    <!-- Caminho original da logo restaurado. -->
                     <img src="/images/logo.png" alt="Logo TENAZ" class="h-20 w-auto">
                 </div>
                 
@@ -309,7 +322,5 @@
             }
         });
     </script>
-    <!-- O script main.js não foi incluído, pois o conteúdo não foi fornecido. -->
-    <!-- <script type="module" src="/src/main.js"></script> -->
 </body>
 </html>
