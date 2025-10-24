@@ -76,7 +76,7 @@
         .mobile-menu {
             transition: all 0.3s ease-in-out;
         }
-
+        
         /* == CSS NOVO PARA O CHECKBOX == */
         .checkbox-wrapper {
             display: flex;
@@ -222,31 +222,70 @@
             
             <form action="https://script.google.com/macros/s/AKfycbxc1JmGaLCBymIfUAjTES3lMZTnOOaz-6BM30b773yvuC0ZmLGL0ABk8O-kY__f8NXW/exec" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
                 
+                <h3 class="text-xl font-bold mb-4 text-tenaz-gold">1. Dados Pessoais</h3>
+
                 <div class="mb-4">
-                    <label for="name" class="block mb-2 text-gray-300">Nome</label>
+                    <label for="name" class="block mb-2 text-gray-300">Nome Completo</label>
                     <input type="text" name="name" id="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="telefone" class="block mb-2 text-gray-300">Seu melhor Whatsapp (com DDD)</label>
+                    <input type="tel" name="telefone" id="telefone" placeholder="(11) 98765-4321" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
                     <label for="email" class="block mb-2 text-gray-300">Email</label>
                     <input type="email" name="email" id="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-                
+
                 <div class="mb-4">
-                    <label for="telefone" class="block mb-2 text-gray-300">Telefone (com DDD)</label>
-                    <input type="tel" name="telefone" id="telefone" placeholder="(11) 98765-4321" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="cpf" class="block mb-2 text-gray-300">CPF</label>
+                    <input type="text" name="cpf" id="cpf" placeholder="Apenas números" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <small class="text-gray-400 mt-1 block">Seus dados estão seguros. O CPF é necessário para o cadastro oficial no projeto.</small>
+                </div>
+
+                <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">2. Endereço</h3>
+
+                <div class="mb-4">
+                    <label for="cep" class="block mb-2 text-gray-300">CEP</label>
+                    <input type="text" name="cep" id="cep" placeholder="00000-000" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
 
                 <div class="mb-4">
-                    <label for="cidade" class="block mb-2 text-gray-300">Cidade</label>
-                    <input type="text" name="cidade" id="cidade" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="endereco" class="block mb-2 text-gray-300">Endereço (Rua / Avenida)</label>
+                    <input type="text" name="endereco" id="endereco" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="numero" class="block mb-2 text-gray-300">Número</label>
+                        <input type="text" name="numero" id="numero" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    </div>
+                    <div class="mb-4">
+                        <label for="complemento" class="block mb-2 text-gray-300">Complemento</label>
+                        <input type="text" name="complemento" id="complemento" placeholder="Casa, Apto, Bloco" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    </div>
                 </div>
 
                 <div class="mb-4">
-                    <label for="estado" class="block mb-2 text-gray-300">Estado</label>
-                    <input type="text" name="estado" id="estado" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="bairro" class="block mb-2 text-gray-300">Bairro</label>
+                    <input type="text" name="bairro" id="bairro" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-                
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="cidade" class="block mb-2 text-gray-300">Cidade</label>
+                        <input type="text" name="cidade" id="cidade" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    </div>
+                    <div class="mb-4">
+                        <label for="estado" class="block mb-2 text-gray-300">Estado (Sigla)</label>
+                        <input type="text" name="estado" id="estado" placeholder="SP" required maxlength="2" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">3. Sobre o Projeto</h3>
+
                 <div class="mb-4">
                     <label for="area_de_atuacao" class="block mb-2 text-gray-300">Qual sua principal área de atuação?</label>
                     <select name="area_de_atuacao" id="area_de_atuacao" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
@@ -285,20 +324,54 @@
                     </select>
                 </div>
 
+                <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">4. Redes Sociais (Opcional)</h3>
+                <p class="text-gray-400 mb-4 -mt-2 text-sm">Preencha os que você tiver. Não é obrigatório.</p>
+
                 <div class="mb-4">
-                    <label for="mensagem" class="block mb-2 text-gray-300">Deixe sua dúvida ou sugestão (Opcional)</label>
+                    <label for="instagram" class="block mb-2 text-gray-300">Instagram</label>
+                    <input type="text" name="instagram" id="instagram" placeholder="@seu_usuario" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="tiktok" class="block mb-2 text-gray-300">TikTok</label>
+                    <input type="text" name="tiktok" id="tiktok" placeholder="@seu_usuario" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="youtube" class="block mb-2 text-gray-300">YouTube</label>
+                    <input type="text" name="youtube" id="youtube" placeholder="youtube.com/seu-canal" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="spotify" class="block mb-2 text-gray-300">Spotify</label>
+                    <input type="text" name="spotify" id="spotify" placeholder="Link do seu perfil, artista ou podcast" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="twitter" class="block mb-2 text-gray-300">Twitter (X)</label>
+                    <input type="text" name="twitter" id="twitter" placeholder="@seu_usuario" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+                
+                <div class="mb-4">
+                    <label for="facebook" class="block mb-2 text-gray-300">Facebook</label>
+                    <input type="text" name="facebook" id="facebook" placeholder="facebook.com/seu.nome" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">5. Dúvidas ou Sugestões</h3>
+                <div class="mb-4">
+                    <label for="mensagem" class="block mb-2 text-gray-300">Deixe sua mensagem (Opcional)</label>
                     <textarea name="mensagem" id="mensagem" rows="4" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black"></textarea>
                 </div>
 
                 <div class="checkbox-wrapper">
                     <input type="checkbox" name="lgpd_consent" id="lgpd_consent" value="Eu concordo" required>
                     <label for="lgpd_consent">
-                        Eu concordo com a <a href="/politica-de-privacidade.html" target="_blank">Política de Privacidade</a> e autorizo o Studio Tenaz a usar meus dados para entrar em contato sobre o projeto.
+                        Eu li e concordo com a <a href="/politica-de-privacidade.html" target="_blank">Política de Privacidade</a> e autorizo o Studio Tenaz a usar meus dados (incluindo dados sensíveis como CPF) para o cadastro e contato sobre o projeto.
                     </label>
                 </div>
                 
                 <button type="submit" class="btn-spotify w-full bg-tenaz-purple text-white font-bold py-3 px-4 rounded-full hover:bg-opacity-90 transition duration-300">
-                    Quero Fazer Parte
+                    Enviar Inscrição
                 </button>
             </form>
         </div>
