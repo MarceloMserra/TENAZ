@@ -76,25 +76,44 @@
         .mobile-menu {
             transition: all 0.3s ease-in-out;
         }
+
+        /* == CSS NOVO PARA O CHECKBOX == */
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 15px;
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .checkbox-wrapper input[type="checkbox"] {
+            flex-shrink: 0;
+            margin-right: 10px;
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
+            /* Classes do Tailwind aplicadas para consistência */
+            border-radius: 0.25rem; 
+            border-color: #4B5563; /* gray-600 */
+            background-color: #374151; /* gray-700 */
+        }
+        .checkbox-wrapper input[type="checkbox"]:checked {
+            background-color: #5e1999; /* tenaz-purple */
+        }
+        .checkbox-wrapper label {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #D1D5DB; /* gray-300 */
+        }
+        .checkbox-wrapper label a {
+            color: #e9ac15; /* tenaz-gold */
+            text-decoration: underline;
+        }
+        /* == FIM DO CSS NOVO == */
     </style>
 </head>
 <body class="font-urban bg-tenaz-dark-bg text-white">
-    <!-- ===== HEADER MODIFICADO ===== -->
     <header class="fixed w-full bg-black bg-opacity-90 z-50 shadow-lg">
-        <!-- 
-            MODIFICAÇÃO PARA LAYOUT MOBILE: 
-            - 'justify-center' centraliza a logo em telas pequenas.
-            - 'md:justify-between' mantém o layout original em telas maiores.
-            - 'relative' é necessário para posicionar o botão de menu.
-        -->
         <div class="container mx-auto px-4 py-3 flex items-center justify-center md:justify-between relative">
             <a href="#home">
-                <!-- 
-                    MODIFICAÇÃO PARA LAYOUT MOBILE: 
-                    - 'h-24' aumenta a altura da logo em telas pequenas.
-                    - 'md:h-20' mantém a altura original em telas maiores.
-                    - O caminho original da logo foi restaurado.
-                -->
                 <img src="/images/logo.png" alt="Logo TENAZ" class="h-24 md:h-20 w-auto">
             </a>
             
@@ -105,10 +124,6 @@
                 <a href="#contact" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Contato</a>
             </nav>
             
-            <!-- 
-                MODIFICAÇÃO PARA LAYOUT MOBILE: 
-                - 'absolute' posiciona o botão de menu sem afetar a centralização da logo.
-            -->
             <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-1/2 -translate-y-1/2">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
@@ -163,7 +178,6 @@
                     <p class="text-tenaz-gold font-bold mt-4">TENAZ – A quebrada tem voz. E agora, vai ecoar mais alto do que nunca.</p>
                 </div>
                 <div class="flex justify-center" data-aos="fade-up" data-aos-delay="300">
-                    <!-- Caminho original da imagem restaurado. -->
                     <img src="/images/Imagem2.png" 
                          alt="Galera da quebrada no estúdio TENAZ" 
                          class="w-full h-64 md:h-80 object-cover rounded-lg shadow-lg">
@@ -206,48 +220,93 @@
             <h2 class="text-3xl font-bold mb-2 text-center text-tenaz-gold" data-aos="fade-up">QUER FAZER PARTE DO PROJETO?</h2>
             <p class="text-xl mb-8 text-center text-gray-300" data-aos="fade-up" data-aos-delay="100">Se inscreva agora!</p>
             
-            <form id="registration-form" action="https://formspree.io/f/mnnvrevj" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
-                <div id="form-success" class="hidden mb-6 p-4 bg-tenaz-gold text-black font-semibold rounded">
-                    Cadastro enviado com sucesso! Em breve entraremos em contato.
+            <form action="https://script.google.com/macros/s/AKfycbxc1JmGaLCBymIfUAjTES3lMZTnOOaz-6BM30b773yvuC0ZmLGL0ABk8O-kY__f8NXW/exec" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
+                
+                <div class="mb-4">
+                    <label for="name" class="block mb-2 text-gray-300">Nome</label>
+                    <input type="text" name="name" id="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
-                    <label for="name" class="block mb-2 text-gray-300">Nome completo</label>
-                    <input type="text" id="name" name="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="email" class="block mb-2 text-gray-300">Email</label>
+                    <input type="email" name="email" id="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
-                    <label for="email" class="block mb-2 text-gray-300">E-mail</label>
-                    <input type="email" id="email" name="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="telefone" class="block mb-2 text-gray-300">Telefone (com DDD)</label>
+                    <input type="tel" name="telefone" id="telefone" placeholder="(11) 98765-4321" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="cidade" class="block mb-2 text-gray-300">Cidade</label>
+                    <input type="text" name="cidade" id="cidade" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                </div>
+
+                <div class="mb-4">
+                    <label for="estado" class="block mb-2 text-gray-300">Estado</label>
+                    <input type="text" name="estado" id="estado" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
                 
                 <div class="mb-4">
-                    <label for="phone" class="block mb-2 text-gray-300">Telefone</label>
-                    <input type="tel" id="phone" name="phone" required pattern="[0-9]{11}" placeholder="11999999999" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="area_de_atuacao" class="block mb-2 text-gray-300">Qual sua principal área de atuação?</label>
+                    <select name="area_de_atuacao" id="area_de_atuacao" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                        <option value="">Selecione uma opção...</option>
+                        <option value="Musica">Música / Produção Musical</option>
+                        <option value="Podcast">Podcast / Locução</option>
+                        <option value="Audiovisual">Audiovisual / Fotografia</option>
+                        <option value="ArtesVisuais">Artes Visuais / Design</option>
+                        <option value="Estudante">Estudante</option>
+                        <option value="Comunidade">Membro da Comunidade / Apoiador</option>
+                        <option value="Outro">Outro</option>
+                    </select>
                 </div>
-                
+
                 <div class="mb-4">
-                    <label for="address" class="block mb-2 text-gray-300">Endereço completo</label>
-                    <input type="text" id="address" name="address" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                    <label for="interesse_no_studio" class="block mb-2 text-gray-300">Qual seu maior interesse no Studio Tenaz?</label>
+                    <select name="interesse_no_studio" id="interesse_no_studio" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                        <option value="">Selecione uma opção...</option>
+                        <option value="UsarEquipamentos">Usar os equipamentos e salas</option>
+                        <option value="ParticiparCursos">Participar de cursos e workshops</option>
+                        <option value="ApoiarMovimento">Apoiar o movimento comunitário</option>
+                        <option value="SaberMais">Apenas saber mais informações</option>
+                        <option value="Outro">Outro</option>
+                    </select>
                 </div>
-                
-                <div class="mb-6">
-                    <label for="cpf" class="block mb-2 text-gray-300">CPF (apenas números)</label>
-                    <input type="text" id="cpf" name="cpf" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+
+                <div class="mb-4">
+                    <label for="como_conheceu" class="block mb-2 text-gray-300">Como você conheceu o Tenaz?</label>
+                    <select name="como_conheceu" id="como_conheceu" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
+                        <option value="">Selecione uma opção...</option>
+                        <option value="Indicacao">Indicação de amigo</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="EventoLocal">Evento local / Ação na comunidade</option>
+                        <option value="Midia">Vi em alguma notícia / Mídia</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="mensagem" class="block mb-2 text-gray-300">Deixe sua dúvida ou sugestão (Opcional)</label>
+                    <textarea name="mensagem" id="mensagem" rows="4" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black"></textarea>
+                </div>
+
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" name="lgpd_consent" id="lgpd_consent" value="Eu concordo" required>
+                    <label for="lgpd_consent">
+                        Eu concordo com a <a href="/politica-de-privacidade.html" target="_blank">Política de Privacidade</a> e autorizo o Studio Tenaz a usar meus dados para entrar em contato sobre o projeto.
+                    </label>
                 </div>
                 
                 <button type="submit" class="btn-spotify w-full bg-tenaz-purple text-white font-bold py-3 px-4 rounded-full hover:bg-opacity-90 transition duration-300">
-                    Quero participar!
+                    Quero Fazer Parte
                 </button>
             </form>
         </div>
     </section>
-
     <footer class="bg-black py-8 px-4 border-t border-gray-800">
         <div class="container mx-auto max-w-4xl">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
-                    <!-- Caminho original da logo restaurado. -->
                     <img src="/images/logo.png" alt="Logo TENAZ" class="h-20 w-auto">
                 </div>
                 
@@ -294,33 +353,10 @@
             });
         });
 
-        // Lógica para o formulário de contato
-        const form = document.getElementById('registration-form');
-        const formSuccess = document.getElementById('form-success');
-
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Previne o envio padrão do formulário
-
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: form.method,
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                form.reset(); // Limpa o formulário
-                formSuccess.classList.remove('hidden'); // Exibe a mensagem de sucesso
-                setTimeout(() => {
-                    formSuccess.classList.add('hidden'); // Esconde a mensagem após alguns segundos
-                }, 5000);
-            } else {
-                // Em caso de erro, você pode adicionar uma mensagem de erro aqui
-                console.error('Erro ao enviar o formulário.');
-            }
-        });
+        // !! A LÓGICA DO FORMULÁRIO ANTIGO FOI REMOVIDA !!
+        // Não precisamos mais do JavaScript para 'submit', pois o
+        // formulário HTML agora envia os dados diretamente
+        // para o Google Apps Script. O script cuidará do redirecionamento.
     </script>
 </body>
 </html>
