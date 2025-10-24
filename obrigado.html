@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obrigado! - TENAZ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tenaz-gold': '#e9ac15',
+                        'tenaz-purple': '#5e1999',
+                        'tenaz-dark-bg': '#191414',
+                    },
+                    fontFamily: {
+                        'urban': ['Urbanist', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-urban bg-tenaz-dark-bg text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-black bg-opacity-80 p-10 md:p-16 rounded-lg shadow-lg text-center max-w-lg mx-auto">
+        
+        <h1 class="text-3xl md:text-4xl font-bold mb-4 text-tenaz-gold">
+            Inscrição Recebida!
+        </h1>
+        
+        <p class="text-lg md:text-xl mb-8 text-gray-300">
+            Obrigado por se cadastrar no projeto TENAZ. Você agora faz parte do movimento! 
+            Em breve, nossa equipe entrará em contato pelo Whatsapp ou email.
+        </p>
+        
+        <a href="https://tenaz.netlify.app/" 
+           class="inline-block bg-tenaz-purple text-white font-bold py-3 px-8 rounded-full text-md hover:bg-opacity-90 transition duration-300">
+            Voltar para o Site
+        </a>
+
+    </div>
+
+</body>
+</html>
