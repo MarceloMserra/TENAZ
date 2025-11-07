@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulamento - TENAZ</title>
+    
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tenaz-gold': '#e9ac15',
+                        'tenaz-gold-start': '#D49B00',
+                        'tenaz-gold-end': '#FFC83D',
+                        'tenaz-purple': '#5e1999',
+                        'tenaz-dark-bg': '#191414',
+                        'tenaz-light-bg': '#282828',
+                    },
+                    fontFamily: {
+                        'urban': ['Urbanist', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* == ESTILOS REPETIDOS PARA HARMONIA == */
+        .hero-image { background-image: url('/images/Imagem1.png'); background-size: cover; background-position: center; position: relative; }
+        .hero-image::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); z-index: 1; }
+        .hero-image > div { position: relative; z-index: 2; }
+        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .mobile-menu { transition: all 0.3s ease-in-out; }
+        .checkbox-wrapper { display: flex; align-items: flex-start; margin-top: 15px; margin-bottom: 1.5rem; }
+        .checkbox-wrapper input[type="checkbox"] { flex-shrink: 0; margin-right: 10px; margin-top: 4px; width: 20px; height: 20px; border-radius: 0.25rem; border-color: #4B5563; background-color: #374151; }
+        .checkbox-wrapper input[type="checkbox"]:checked { background-color: #5e1999; }
+        .checkbox-wrapper label { font-size: 0.9rem; line-height: 1.4; color: #D1D5DB; }
+        .checkbox-wrapper label a { color: #e9ac15; text-decoration: underline; }
+        
+        /* == ESTILOS PARA O CONTEÚDO DE TEXTO == */
+        .text-content-page h3 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700; /* font-bold */
+            color: #e9ac15; /* tenaz-gold */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .text-content-page p {
+            margin-bottom: 1rem; /* mb-4 */
+            line-height: 1.6;
+        }
+        .text-content-page ul {
+            list-style-type: disc;
+            margin-left: 1.5rem; /* ml-6 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+        .text-content-page li {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+    </style>
+</head>
+<body class="font-urban bg-tenaz-dark-bg text-white">
+
+    <header class="fixed w-full bg-black bg-opacity-90 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-center md:justify-between relative">
+            <a href="/">
+                <img src="/images/logo.png" alt="Logo TENAZ" class="h-24 md:h-20 w-auto">
+            </a>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="/#home" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Início</a>
+                <a href="/#about" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Sobre</a>
+                <a href="/#workshops" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Oficinas</a>
+                <a href="/#contact" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Contato</a>
+            </nav>
+            
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none absolute right-4 top-1/2 -translate-y-1/2">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="mobile-menu" class="mobile-menu hidden md:hidden bg-black w-full py-4 px-4">
+            <div class="flex flex-col space-y-4">
+                <a href="/#home" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Início</a>
+                <a href="/#about" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Sobre</a>
+                <a href="/#workshops" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Oficinas</a>
+                <a href="/#contact" class="menu-item text-white hover:text-tenaz-gold transition duration-300">Contato</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="page-content" class="pt-32 pb-16 bg-tenaz-light-bg px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl font-bold mb-8 text-center text-tenaz-gold" data-aos="fade-up">
+                Regulamento do Movimento TENAZ
+            </h2>
+            
+            <div class="text-gray-300 text-content-page" data-aos="fade-up" data-aos-delay="100">
+                <p>Bem-vindo ao <strong>TENAZ – A Voz das Quebradas</strong>. Este é um espaço comunitário, construído da quebrada para a quebrada. Para que o projeto funcione e sirva a todos da melhor forma, é essencial que todos os participantes ("membros") sigam este regulamento.</p>
+                <p>Ao se inscrever e participar das atividades do TENAZ, você concorda com as seguintes regras:</p>
+
+                <h3>1. Objetivo do Projeto</h3>
+                <p>O TENAZ é um estúdio comunitário e movimento cultural que visa dar voz, espaço e ferramentas para artistas e criadores da comunidade. Nosso foco é a transformação social através da arte, música (Rap, Poesia), arte urbana (Grafite) e audiovisual.</p>
+
+                <h3>2. Elegibilidade e Inscrição</h3>
+                <p>Qualquer pessoa que se identifique com a missão do projeto pode se inscrever. A inscrição é feita através do formulário oficial no site. A participação efetiva nas atividades (uso do estúdio, workshops) pode estar sujeita à disponibilidade de vagas e agendamento prévio.</p>
+
+                <h3>3. Regras de Conduta e Convivência</h3>
+                <p>O TENAZ é um espaço de respeito, criação e resistência. Portanto, não será tolerado:</p>
+                <ul>
+                    <li>Qualquer forma de discriminação (racismo, homofobia, transfobia, machismo, xenofobia, etc.).</li>
+                    <li>Assédio moral ou sexual.</li>
+                    <li>Uso ou porte de substâncias ilícitas nas dependências do estúdio ou durante as atividades do projeto.</li>
+                    <li>Conflitos, brigas ou qualquer atitude que coloque em risco a integridade física ou psicológica dos outros membros.</li>
+                    <li>Desrespeito aos coordenadores, instrutores ou outros membros do projeto.</li>
+                </ul>
+                <p>O espaço é de todos. Mantenha-o limpo e organizado. O que é da quebrada, a gente cuida.</p>
+
+                <h3>4. Uso do Estúdio e Equipamentos</h3>
+                <ul>
+                    <li>O uso do estúdio de gravação e equipamentos audiovisuais deve ser <strong>agendado previamente</strong> com a coordenação do projeto.</li>
+                    <li>Os horários de agendamento devem ser rigorosamente respeitados.</li>
+                    <li>Os equipamentos são de uso coletivo e devem ser manuseados com cuidado. Siga sempre as orientações dos técnicos ou instrutores.</li>
+                    <li>Qualquer dano causado por mau uso, negligência ou intencionalmente será de responsabilidade do membro ou grupo que o causou.</li>
+                    <li>Não é permitido comer ou beber na área dos equipamentos de gravação (estúdio/téc.).</li>
+                </ul>
+
+                <h3>5. Propriedade Intelectual e Uso de Imagem</h3>
+                <ul>
+                    <li>As obras criadas (músicas, vídeos, artes) são de propriedade intelectual de seus respectivos criadores (os membros).</li>
+                    <li>Ao participar das oficinas e atividades do projeto, você autoriza o TENAZ a utilizar sua imagem (fotos e vídeos) e as obras produzidas *durante as atividades* para fins de divulgação, portfólio e prestação de contas do projeto, sem fins lucrativos, e sempre dando os devidos créditos aos artistas.</li>
+                </ul>
+
+                <h3>6. Penalidades</h3>
+                <p>O descumprimento de qualquer regra deste regulamento pode resultar em:</p>
+                <ol>
+                    <li>1. Advertência verbal.</li>
+                    <li>2. Suspensão temporária do uso do estúdio e participação nas atividades.</li>
+                    <li>3. Exclusão permanente do projeto (em casos graves ou reincidentes).</li>
+                </ol>
+                <p>A coordenação do projeto analisará cada caso individualmente.</p>
+
+                <h3>7. Disposições Finais</h3>
+                <p>Este regulamento pode ser alterado a qualquer momento pela coordenação do TENAZ, visando o melhor funcionamento do projeto. As alterações serão comunicadas a todos os membros cadastrados.</p>
+                <p>Contamos com o bom senso e o respeito de todos para fazer do TENAZ um verdadeiro espaço de transformação. A quebrada tem voz, e aqui ela ecoa com respeito.</p>
+
+                <div class="mt-8 text-center">
+                    <a href="/" class="btn-spotify inline-block bg-tenaz-purple text-white font-bold py-2 px-6 rounded-full text-md hover:bg-opacity-90 transition duration-300">
+                        Voltar ao Início
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-8 px-4 border-t border-gray-800">
+        <div class="container mx-auto max-w-4xl">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <a href="/"><img src="/images/logo.png" alt="Logo TENAZ" class="h-20 w-auto"></a>
+                </div>
+                
+                <div class="flex space-x-6 mb-4 md:mb-0">
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
+                        <i class="fab fa-youtube text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
+                        <i class="fab fa-spotify text-2xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-tenaz-gold transition duration-300">
+                        <i class="fab fa-tiktok text-2xl"></i>
+                    </a>
+                </div>
+                
+                <div class="text-gray-400 text-sm text-center md:text-right">
+                    <div class="flex justify-center md:justify-end space-x-4 mb-2">
+                        <a href="/politica-de-privacidade.html" class="hover:text-tenaz-gold transition duration-300">Política de Privacidade</a>
+                        <span>|</span>
+                        <a href="/regulamento.html" class="text-tenaz-gold transition duration-300">Regulamento</a>
+                    </div>
+                    <div>
+                        &copy; 2025 TENAZ - A voz das quebradas. Todos os direitos reservados.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fechar menu mobile ao clicar em um item
+        document.querySelectorAll('#mobile-menu .menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
