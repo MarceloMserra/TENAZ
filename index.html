@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TENAZ - A voz das quebradas</title>
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KCYWNS4FLJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-KCYWNS4FLJ');
+    </script>
     <link rel="icon" href="/images/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="/images/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -101,8 +109,6 @@
             color: #e9ac15;
             text-decoration: underline;
         }
-
-        /* == INÍCIO: ESTILOS DO VÍDEO INTERATIVO == */
         .video-overlay {
             position: absolute;
             top: 0;
@@ -130,15 +136,9 @@
             position: relative;
             z-index: 11;
             font-size: 80px;
-            
-            /* == MUDANÇA: Cor alterada para o roxo da marca == */
             color: #5e1999; /* tenaz-purple */
-            
             opacity: 0.9;
-            
-            /* == MUDANÇA: Sombra alterada para um "glow" branco == */
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-            
             animation: pulse 2s infinite ease-in-out;
             transition: transform 0.3s ease;
         }
@@ -151,8 +151,6 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        /* == FIM: ESTILOS DO VÍDEO INTERATIVO == */
-
     </style>
 </head>
 <body class="font-urban bg-tenaz-dark-bg text-white">
@@ -203,9 +201,7 @@
             <div class="video-container" data-aos="fade-up" data-aos-delay="200">
                 
                 <div id="video-overlay" class="video-overlay">
-                    
                     <img src="/images/video_capa.png" alt="Capa do vídeo Tenaz" class="opacity-80">
-                    
                     <i class="fas fa-play-circle play-icon"></i>
                 </div>
                 
@@ -223,6 +219,7 @@
             </div>
         </div>
     </section>
+
     <section id="about" class="py-16 bg-tenaz-light-bg px-4">
         <div class="container mx-auto max-w-4xl">
             <h2 class="text-3xl font-bold mb-8 text-center text-tenaz-gold" data-aos="fade-up">SOBRE O PROJETO</h2>
@@ -285,7 +282,7 @@
             <h2 class="text-3xl font-bold mb-2 text-center text-tenaz-gold" data-aos="fade-up">QUER FAZER PARTE DO PROJETO?</h2>
             <p class="text-xl mb-8 text-center text-gray-300" data-aos="fade-up" data-aos-delay="100">Se inscreva agora!</p>
             
-            <form action="https://script.google.com/macros/s/AKfycbxc1JmGaLCBymIfUAjTES3lMZTnOOaz-6BM30b773yvuC0ZmLGL0ABk8O-kY__f8NXW/exec" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
+            <form id="contact-form" action="https://script.google.com/macros/s/AKfycbxc1JmGaLCBymIfUAjTES3lMZTnOOaz-6BM30b773yvuC0ZmLGL0ABk8O-kY__f8NXW/exec" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
                 
                 <h3 class="text-xl font-bold mb-4 text-tenaz-gold">1. Dados Pessoais</h3>
 
@@ -359,7 +356,7 @@
                         <option value="Podcast">Podcast / Locução</option>
                         <option value="Audiovisual">Audiovisual / Fotografia</option>
                         <option value="ArtesVisuais">Artes Visuais / Design</option>
-                        <option value_completos="Estudante">Estudante</option>
+                        <option value="Estudante">Estudante</option>
                         <option value="Comunidade">Membro da Comunidade / Apoiador</option>
                         <option value="Outro">Outro</option>
                     </select>
@@ -579,7 +576,26 @@
             const videoUrl = videoPlayer.getAttribute('data-src');
             videoPlayer.src = videoUrl + "&autoplay=1";
             videoOverlay.style.display = 'none';
+            
+            // RASTREAR O CLIQUE DO VÍDEO
+            if (typeof gtag === 'function') {
+                gtag('event', 'play_video', { 
+                    'video_title': 'Conheca o Tenaz' 
+                });
+            }
         });
+        
+        // RASTREAR O ENVIO DO FORMULÁRIO
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', () => {
+                if (typeof gtag === 'function') {
+                    gtag('event', 'submit_form', {
+                        'form_name': 'Inscricao Tenaz'
+                    });
+                }
+            });
+        }
 
     </script>
 </body>
