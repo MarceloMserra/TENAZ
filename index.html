@@ -4,21 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TENAZ - A voz das quebradas</title>
-    
+
+    <meta property="og:title" content="TENAZ - A voz das quebradas">
+    <meta property="og:description" content="Estúdio comunitário, cultura e oportunidade. Venha fazer parte do movimento que dá voz e vez para a quebrada. Inscreva-se!">
+    <meta property="og:image" content="https://www.movimentotenaz.com.br/images/video_capa.png">
+    <meta property="og:url" content="https://www.movimentotenaz.com.br/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Movimento Tenaz">
+    <meta property="og:locale" content="pt_BR">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TENAZ - A voz das quebradas">
+    <meta name="twitter:description" content="Estúdio comunitário, cultura e oportunidade. Venha fazer parte do movimento que dá voz e vez para a quebrada.">
+    <meta name="twitter:image" content="https://www.movimentotenaz.com.br/images/video_capa.png">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KCYWNS4FLJ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-KCYWNS4FLJ');
     </script>
+
     <link rel="icon" href="/images/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="/images/favicon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -38,6 +53,7 @@
             }
         }
     </script>
+
     <style>
         html {
             scroll-behavior: smooth;
@@ -68,8 +84,8 @@
             padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
             height: 0;
             overflow: hidden;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .video-container iframe {
             position: absolute;
@@ -81,6 +97,7 @@
         .mobile-menu {
             transition: all 0.3s ease-in-out;
         }
+        /* Checkbox Personalizado */
         .checkbox-wrapper {
             display: flex;
             align-items: flex-start;
@@ -96,19 +113,24 @@
             border-radius: 0.25rem; 
             border-color: #4B5563;
             background-color: #374151;
+            cursor: pointer;
         }
         .checkbox-wrapper input[type="checkbox"]:checked {
             background-color: #5e1999;
+            border-color: #5e1999;
         }
         .checkbox-wrapper label {
             font-size: 0.9rem;
             line-height: 1.4;
             color: #D1D5DB;
+            cursor: pointer;
         }
         .checkbox-wrapper label a {
             color: #e9ac15;
             text-decoration: underline;
         }
+        
+        /* Capa do Vídeo Interativa */
         .video-overlay {
             position: absolute;
             top: 0;
@@ -136,7 +158,7 @@
             position: relative;
             z-index: 11;
             font-size: 80px;
-            color: #5e1999; /* tenaz-purple */
+            color: #5e1999; /* Roxo da Marca */
             opacity: 0.9;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
             animation: pulse 2s infinite ease-in-out;
@@ -249,7 +271,6 @@
         <div class="container mx-auto max-w-4xl">
             <h2 class="text-3xl font-bold mb-8 text-center text-tenaz-gold" data-aos="fade-up">OFICINAS</h2>
             <div class="grid md:grid-cols-3 gap-6">
-                
                 <div class="bg-tenaz-light-bg p-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100">
                     <div class="w-16 h-16 bg-tenaz-purple rounded-full flex items-center justify-center mb-4 mx-auto">
                         <i class="fas fa-microphone text-white text-2xl"></i>
@@ -257,7 +278,6 @@
                     <h3 class="text-xl font-bold mb-3 text-center text-white">RAP & POESIA</h3>
                     <p class="text-gray-400 text-center">Oficinas de escrita criativa, rimas e performance vocal para quem quer se expressar através do rap e da poesia.</p>
                 </div>
-                
                 <div class="bg-tenaz-light-bg p-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="200">
                     <div class="w-16 h-16 bg-tenaz-purple rounded-full flex items-center justify-center mb-4 mx-auto">
                         <i class="fas fa-paint-brush text-white text-2xl"></i>
@@ -265,7 +285,6 @@
                     <h3 class="text-xl font-bold mb-3 text-center text-white">GRAFITE & ARTE URBANA</h3>
                     <p class="text-gray-400 text-center">Técnicas de grafite, stencil e arte de rua para transformar muros em telas de expressão.</p>
                 </div>
-                
                 <div class="bg-tenaz-light-bg p-6 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:-translate-y-2" data-aos="fade-up" data-aos-delay="300">
                     <div class="w-16 h-16 bg-tenaz-purple rounded-full flex items-center justify-center mb-4 mx-auto">
                         <i class="fas fa-video text-white text-2xl"></i>
@@ -285,22 +304,18 @@
             <form id="contact-form" action="https://script.google.com/macros/s/AKfycbxc1JmGaLCBymIfUAjTES3lMZTnOOaz-6BM30b773yvuC0ZmLGL0ABk8O-kY__f8NXW/exec" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
                 
                 <h3 class="text-xl font-bold mb-4 text-tenaz-gold">1. Dados Pessoais</h3>
-
                 <div class="mb-4">
                     <label for="name" class="block mb-2 text-gray-300">Nome Completo</label>
                     <input type="text" name="name" id="name" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="telefone" class="block mb-2 text-gray-300">Seu melhor Whatsapp (com DDD)</label>
                     <input type="tel" name="telefone" id="telefone" placeholder="(11) 98765-4321" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-                
                 <div class="mb-4">
                     <label for="email" class="block mb-2 text-gray-300">Email</label>
                     <input type="email" name="email" id="email" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="cpf" class="block mb-2 text-gray-300">CPF</label>
                     <input type="text" name="cpf" id="cpf" placeholder="Apenas números" required pattern="[0-9]{11}" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
@@ -308,17 +323,14 @@
                 </div>
 
                 <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">2. Endereço</h3>
-
                 <div class="mb-4">
                     <label for="cep" class="block mb-2 text-gray-300">CEP</label>
                     <input type="text" name="cep" id="cep" placeholder="00000-000" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="endereco" class="block mb-2 text-gray-300">Endereço (Rua / Avenida)</label>
                     <input type="text" name="endereco" id="endereco" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div class="mb-4">
                         <label for="numero" class="block mb-2 text-gray-300">Número</label>
@@ -329,12 +341,10 @@
                         <input type="text" name="complemento" id="complemento" placeholder="Casa, Apto, Bloco" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                     </div>
                 </div>
-
                 <div class="mb-4">
                     <label for="bairro" class="block mb-2 text-gray-300">Bairro</label>
                     <input type="text" name="bairro" id="bairro" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div class="mb-4">
                         <label for="cidade" class="block mb-2 text-gray-300">Cidade</label>
@@ -347,7 +357,6 @@
                 </div>
 
                 <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">3. Sobre o Projeto</h3>
-
                 <div class="mb-4">
                     <label for="area_de_atuacao" class="block mb-2 text-gray-300">Qual sua principal área de atuação?</label>
                     <select name="area_de_atuacao" id="area_de_atuacao" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
@@ -361,7 +370,6 @@
                         <option value="Outro">Outro</option>
                     </select>
                 </div>
-
                 <div class="mb-4">
                     <label for="interesse_no_studio" class="block mb-2 text-gray-300">Qual seu maior interesse no Studio Tenaz?</label>
                     <select name="interesse_no_studio" id="interesse_no_studio" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
@@ -373,7 +381,6 @@
                         <option value="Outro">Outro</option>
                     </select>
                 </div>
-
                 <div class="mb-4">
                     <label for="como_conheceu" class="block mb-2 text-gray-300">Como você conheceu o Tenaz?</label>
                     <select name="como_conheceu" id="como_conheceu" required class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
@@ -388,32 +395,26 @@
 
                 <h3 class="text-xl font-bold mt-6 mb-4 text-tenaz-gold">4. Redes Sociais (Opcional)</h3>
                 <p class="text-gray-400 mb-4 -mt-2 text-sm">Preencha os que você tiver. Não é obrigatório.</p>
-
                 <div class="mb-4">
                     <label for="instagram" class="block mb-2 text-gray-300">Instagram</label>
                     <input type="text" name="instagram" id="instagram" placeholder="@seu_usuario" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="tiktok" class="block mb-2 text-gray-300">TikTok</label>
                     <input type="text" name="tiktok" id="tiktok" placeholder="@seu_usuario" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="youtube" class="block mb-2 text-gray-300">YouTube</label>
                     <input type="text" name="youtube" id="youtube" placeholder="youtube.com/seu-canal" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="spotify" class="block mb-2 text-gray-300">Spotify</label>
                     <input type="text" name="spotify" id="spotify" placeholder="Link do seu perfil, artista ou podcast" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-
                 <div class="mb-4">
                     <label for="twitter" class="block mb-2 text-gray-300">Twitter (X)</label>
                     <input type="text" name="twitter" id="twitter" placeholder="@seu_usuario" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
                 </div>
-                
                 <div class="mb-4">
                     <label for="facebook" class="block mb-2 text-gray-300">Facebook</label>
                     <input type="text" name="facebook" id="facebook" placeholder="facebook.com/seu.nome" class="w-full p-3 rounded focus:outline-none focus:ring-2 focus:ring-tenaz-gold text-black">
@@ -457,7 +458,7 @@
                         Eu confirmo que me conectei (ou já sigo) os perfis dos **Criadores** listados acima para validar minha inscrição.
                     </label>
                 </div>
-                
+
                 <div class="checkbox-wrapper">
                     <input type="checkbox" name="lgpd_consent" id="lgpd_consent" value="Eu concordo" required>
                     <label for="lgpd_consent">
@@ -473,6 +474,7 @@
             </form>
         </div>
     </section>
+
     <footer class="bg-black py-8 px-4 border-t border-gray-800">
         <div class="container mx-auto max-w-4xl">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -505,7 +507,7 @@
                         &copy; 2025 TENAZ - A voz das quebradas. Todos os direitos reservados.
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
     </footer>
 
@@ -518,20 +520,19 @@
             once: true,
         });
 
-        // Lógica para o menu mobile
+        // Menu Mobile
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenu.classList.toggle('hidden');
         });
 
-        // Fechar menu mobile ao clicar em um item (para navegação suave)
         document.querySelectorAll('#mobile-menu .menu-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.getElementById('mobile-menu').classList.add('hidden');
             });
         });
 
-        // --- Lógica para habilitar o botão de envio ---
+        // Lógica para Habilitar Botão
         const followCheckbox = document.getElementById('follow_consent');
         const submitButton = document.getElementById('submit-button');
 
@@ -544,8 +545,7 @@
         }
         followCheckbox.addEventListener('change', checkFormReadiness);
 
-
-        // --- Lógica do Header "On-Scroll" ---
+        // Header On-Scroll
         const header = document.getElementById('main-header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) { 
@@ -557,7 +557,7 @@
             }
         });
 
-        // --- Lógica do "Scrollspy" (Menu Ativo) ---
+        // Scrollspy
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.menu-item[data-section]');
 
@@ -580,7 +580,7 @@
             });
         });
 
-        // --- LÓGICA DO VÍDEO INTERATIVO ---
+        // Vídeo Interativo + Tracking
         const videoOverlay = document.getElementById('video-overlay');
         const videoPlayer = document.getElementById('video-player');
 
@@ -589,7 +589,6 @@
             videoPlayer.src = videoUrl + "&autoplay=1";
             videoOverlay.style.display = 'none';
             
-            // RASTREAR O CLIQUE DO VÍDEO
             if (typeof gtag === 'function') {
                 gtag('event', 'play_video', { 
                     'video_title': 'Conheca o Tenaz' 
@@ -597,7 +596,7 @@
             }
         });
         
-        // RASTREAR O ENVIO DO FORMULÁRIO
+        // Form Tracking
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
             contactForm.addEventListener('submit', () => {
@@ -608,7 +607,6 @@
                 }
             });
         }
-
     </script>
 </body>
 </html>
