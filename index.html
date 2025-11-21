@@ -305,6 +305,8 @@
             
             <form id="contact-form" action="https://script.google.com/macros/s/AKfycbxc1JmGaLCBymIfUAjTES3lMZTnOOaz-6BM30b773yvuC0ZmLGL0ABk8O-kY__f8NXW/exec" method="POST" class="bg-tenaz-light-bg p-8 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="200">
                 
+                <input type="hidden" name="redirect" value="https://movimentotenaz.com.br/obrigado.html">
+                
                 <h3 class="text-xl font-bold mb-4 text-tenaz-gold">1. Dados Pessoais</h3>
                 <div class="mb-4">
                     <label for="name" class="block mb-2 text-gray-300">Nome Completo</label>
@@ -546,19 +548,15 @@
         // Lógica para Habilitar Botão
         const followCheckbox = document.getElementById('follow_consent');
         const submitButton = document.getElementById('submit-button');
-        const contactForm = document.getElementById('contact-form'); // Adicionado
-        const mensagemField = document.getElementById('mensagem'); // Adicionado
-        const charCount = document.getElementById('char-count'); // Adicionado
-        const MAX_CHARS = 300; // Constante para o limite
+        const contactForm = document.getElementById('contact-form');
+        const mensagemField = document.getElementById('mensagem');
+        const charCount = document.getElementById('char-count');
+        const MAX_CHARS = 300;
 
         function checkFormReadiness() {
-            // Verifica o checkbox de consentimento
             const consentValid = followCheckbox.checked;
-
-            // Verifica o limite de caracteres
             const messageValid = mensagemField.value.length <= MAX_CHARS;
             
-            // O botão só é habilitado se o consentimento for válido E o limite de caracteres não for excedido
             if (consentValid && messageValid) {
                 submitButton.disabled = false;
             } else {
@@ -567,23 +565,20 @@
         }
         followCheckbox.addEventListener('change', checkFormReadiness);
 
-        // NOVO SCRIPT PARA CONTADOR DE CARACTERES
+        // SCRIPT PARA CONTADOR DE CARACTERES
         mensagemField.addEventListener('input', () => {
             const currentLength = mensagemField.value.length;
             
-            // Atualiza o texto do contador
             charCount.textContent = `${currentLength} / ${MAX_CHARS} caracteres`;
 
-            // Muda a cor e ajusta a validade
             if (currentLength > MAX_CHARS) {
                 charCount.classList.remove('text-gray-400');
-                charCount.classList.add('text-red-500'); // Fica vermelho se exceder
+                charCount.classList.add('text-red-500');
             } else {
                 charCount.classList.remove('text-red-500');
-                charCount.classList.add('text-gray-400'); // Volta para cinza
+                charCount.classList.add('text-gray-400');
             }
 
-            // Chama a função de checagem para desabilitar/habilitar o botão
             checkFormReadiness(); 
         });
 
@@ -645,10 +640,9 @@
         // Form Tracking
         if (contactForm) {
             contactForm.addEventListener('submit', (event) => {
-                // Prevenção extra caso o JS do navegador falhe, embora o botão já esteja desabilitado
                 if (mensagemField.value.length > MAX_CHARS) {
                     alert(`A mensagem excede o limite de ${MAX_CHARS} caracteres. Por favor, reduza o texto.`);
-                    event.preventDefault(); // Impede o envio
+                    event.preventDefault();
                     return;
                 }
 
