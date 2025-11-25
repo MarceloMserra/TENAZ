@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Organograma de Parceiros — Movimento Tenaz</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root{
+      /* Cores extraídas do seu index.html */
+      --tenaz-gold: #e9ac15;
+      --tenaz-gold-start:#D49B00;
+      --tenaz-gold-end:#FFC83D;
+      --tenaz-purple:#5e1999;
+      --tenaz-dark-bg:#191414;  /* Fundo principal */
+      --tenaz-light-bg:#282828; /* Fundo dos cards */
+
+      /* Cores auxiliares ajustadas para o tema dark moderno */
+      --ink: #ffffff;
+      --muted: #D1D5DB; /* Cinza claro padrão do index */
+      --stroke: rgba(255,255,255,.15);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+
+      --radius: 8px; /* Bordas um pouco mais quadradas como no index */
+      --font: "Urbanist", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--ink);
+      overflow:hidden; 
+      /* Fundo sólido com leve textura para manter a identidade, mas escuro como o index */
+      background-color: var(--tenaz-dark-bg);
+      background-image: radial-gradient(circle at 50% 0%, rgba(94, 25, 153, 0.15), transparent 60%);
+    }
+
+    /* Top bar estilo Index */
+    .topbar{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(0,0,0,.90); /* Mais escuro */
+      border-bottom: 1px solid var(--stroke);
+      backdrop-filter: blur(5px);
+    }
+    .topbar .inner{
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .title{
+      display:flex;
+      align-items:flex-start;
+      gap: 12px;
+      min-width: 220px;
+    }
+    .badge{
+      width: 40px; height: 40px;
+      display:grid; place-items:center;
+      border-radius: var(--radius);
+      background: var(--tenaz-purple);
+      color: white;
+      border: none;
+      flex: 0 0 auto;
+      font-size: 18px;
+    }
+    h1{
+      margin:0;
+      font-size: 16px;
+      line-height: 1.2;
+      letter-spacing: .5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .subtitle{
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      max-width: 640px;
+    }
+    .accent{
+      color: var(--tenaz-gold);
+      font-weight: 800;
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .btn{
+      cursor:pointer;
+      border: 1px solid var(--stroke); 
+      background: var(--tenaz-light-bg);
+      color: var(--ink);
+      padding: 8px 16px;
+      border-radius: 999px; /* Botões arredondados como no site */
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      transition: all .2s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .btn:hover{ 
+        border-color: var(--tenaz-gold); 
+        color: var(--tenaz-gold);
+        transform: translateY(-1px);
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    /* Botão Primary roxo */
+    .btn.primary{
+      border-color: var(--tenaz-purple);
+      background: var(--tenaz-purple);
+      color: white;
+    }
+    .btn.primary:hover{ 
+      background: rgba(94,25,153,.9); 
+      border-color: var(--tenaz-purple);
+      color: white;
+      opacity: 0.9;
+    }
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--tenaz-light-bg);
+      min-width: 260px;
+    }
+    .search input{
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--ink);
+      font-size: 13px;
+      font-family: var(--font);
+    }
+    .search input::placeholder{ color: rgba(255,255,255,.40); }
+
+    .toolbar{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 60;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.9);
+      box-shadow: var(--shadow);
+    }
+    .toolbar .mini{
+      padding: 9px 12px;
+      border-radius: 6px;
+    }
+
+    /* Page / Panel */
+    .page{
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 72px; /* Topbar height adjusted */
+      bottom: 0;
+      padding: 0; /* Full bleed */
+      overflow:hidden;
+    }
+
+    .panel{
+      height: 100%;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      overflow: hidden;
+      display:flex;
+      flex-direction: column;
+    }
+
+    .panel-head{
+      padding: 16px 20px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--stroke);
+      background: var(--tenaz-dark-bg);
+      flex: 0 0 auto;
+      flex-wrap: wrap;
+    }
+    .panel-head .metrics{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .pill{
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      line-height: 1;
+      border: 1px solid var(--tenaz-purple);
+      background: rgba(94,25,153,.15); 
+      color: #fff;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .pill b{ color: var(--tenaz-gold); font-weight: 700; }
+    .legend{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+      margin-left:auto;
+    }
+    .tag{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--stroke);
+      background: var(--tenaz-light-bg);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .dot{ width:8px; height:8px; border-radius: 50%; }
+
+    /* Stage */
+    .stage{
+      flex: 1 1 auto;
+      position: relative;
+      overflow: hidden;
+      background: var(--tenaz-dark-bg);
+      cursor: grab;
+    }
+    .stage.grabbing{ cursor: grabbing; }
+
+    .zoomLayer{
+      position:absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    /* ORG CHART */
+    .org{
+      display:flex;
+      justify-content:center;
+      padding: 60px 80px 100px;
+    }
+    .org ul{
+      display:flex;
+      justify-content:center;
+      gap: 22px;
+      padding-top: 30px;
+      position:relative;
+      list-style:none;
+      margin:0;
+      padding-left:0;
+    }
+    .org li{
+      list-style:none;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 16px;
+      padding: 0 10px;
+      min-width: 260px;
+    }
+
+    /* Linhas conectores */
+    .org li::before{
+      content:"";
+      position:absolute;
+      top: -30px;
+      left: 50%;
+      width: 1px;
+      height: 30px;
+      background: rgba(255,255,255,.3); /* Mais fino e discreto */
+      transform: translateX(-50%);
+    }
+    .org > ul > li::before{ display:none; }
+
+    .org ul::before{
+      content:"";
+      position:absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255,255,255,.3);
+      opacity: 1;
+      margin: 0 12%;
+    }
+    .org ul.single::before{ display:none; }
+
+    /* CARD DO NÓ - Estilo Moderno */
+    .node{
+      width: 300px;
+      border-radius: 6px; /* Cantos menos arredondados, mais técnico */
+      border: 1px solid var(--stroke);
+      background: var(--tenaz-light-bg);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      position:relative;
+      overflow:hidden;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    .node:hover{
+        border-color: rgba(255,255,255,.3);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+    
+    .node::after{
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0; height: 3px;
+      background: transparent;
+    }
+
+    .node .content{
+      position:relative;
+      padding: 16px;
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+      z-index: 1;
+    }
+    .node .head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .node .left{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+    }
+    
+    /* Ícone Moderno */
+    .icon{
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display:grid; place-items:center;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,.1);
+      flex:0 0 auto;
+      font-size: 16px;
+      color: var(--tenaz-gold); /* Ícones dourados */
+    }
+    
+    .node .label-link {
+        display: flex;
+        align-items: center;
+        gap: 8px; 
+        text-decoration: none; 
+        color: var(--ink); 
+        cursor: pointer;
+    }
+    .node .label-link:hover {
+        color: var(--tenaz-gold); 
+    }
+    
+    .node .label {
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.2;
+        letter-spacing: .2px;
+    }
+    
+    .node .link-icon {
+        color: var(--tenaz-gold);
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .node .desc{
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .node .meta{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+    .chip{
+      font-size: 11px;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(0,0,0,.3);
+      color: var(--muted);
+      display:inline-flex;
+      align-items:center;
+      gap: 4px;
+    }
+    .chip b{ color: white; font-weight: 700; }
+
+    /* Toggle Button */
+    .toggle{
+      cursor:pointer;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display:grid;
+      place-items:center;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.5);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 0;
+      font-weight: 400;
+      user-select:none;
+      transition: all .15s ease;
+      flex: 0 0 auto;
+    }
+    .toggle:hover{ border-color: var(--tenaz-gold); color: var(--tenaz-gold); }
+    .toggle[aria-disabled="true"]{ opacity: 0; pointer-events:none; }
+
+    /* Accents baseados no CSS antigo mas modernizados */
+    .accent-gold::after{ background: var(--tenaz-gold); }
+    .accent-purple::after{ background: var(--tenaz-purple); }
+    .accent-mix::after{ background: linear-gradient(90deg, var(--tenaz-gold), var(--tenaz-purple)); }
+    .accent-soft::after{ background: #7b2bd1; }
+
+    /* Collapse behavior */
+    li.collapsed > ul{ display:none !important; }
+
+    /* Search highlighting */
+    .node.match{
+      border-color: var(--tenaz-gold);
+      box-shadow: 0 0 0 2px var(--tenaz-gold);
+    }
+    .node.dim{
+      opacity: .2;
+    }
+
+    .hint{
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 60;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.9);
+      color: var(--muted);
+      font-size: 11px;
+    }
+    kbd{
+      font-family: var(--font);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.1);
+      color: white;
+    }
+
+    @media (max-width: 820px){
+      .search{ min-width: 180px; }
+      .node{ width: 260px; }
+      .org li{ min-width: 220px; }
+      .panel-head{ gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="title">
+        <div class="badge"><i class="fas fa-sitemap"></i></div>
+        <div>
+          <h1>Organograma — <span class="accent">Movimento Tenaz</span></h1>
+          <div class="subtitle">Zoom e arraste funcionam <b>somente</b> na área do gráfico.</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search" title="Buscar por @perfil, nome, categoria...">
+          <i class="fas fa-search text-gray-400"></i>
+          <input id="search" type="text" placeholder="Buscar..." />
+          <span id="clear" class="btn" style="padding:4px 8px;border-radius:4px;font-size:10px;">✕</span>
+        </div>
+        <div class="btn primary" id="expandAll"><i class="fas fa-plus"></i> Expandir</div>
+        <div class="btn" id="collapseAll"><i class="fas fa-minus"></i> Recolher</div>
+        <div class="btn" id="fitAllTop"><i class="fas fa-compass"></i> Enquadrar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="metrics">
+          <div class="pill">📣 Alcance: <b>2.6M+</b></div>
+          <div class="pill">👥 Cadastros: <b>5.022</b></div>
+          <div class="pill">📈 Insta: <b>54k</b></div>
+        </div>
+
+        <div class="legend">
+          <div class="tag"><span class="dot" style="background:var(--tenaz-gold)"></span> Mídia / Rap</div>
+          <div class="tag"><span class="dot" style="background:var(--tenaz-purple)"></span> Artistas</div>
+          <div class="tag"><span class="dot" style="background:var(--tenaz-gold-end)"></span> TV / Quadro</div>
+          <div class="tag"><span class="dot" style="background:#7b2bd1"></span> Apoio</div>
+        </div>
+      </div>
+
+      <div class="stage" id="stage" aria-label="Organograma (pan/zoom)">
+        <div class="zoomLayer" id="zoomLayer">
+          <div class="org" id="chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">
+    Arraste para mover • Zoom: <kbd>Ctrl</kbd> + Scroll
+  </div>
+
+  <div class="toolbar">
+    <div class="btn mini" id="zoomOut"><i class="fas fa-minus"></i></div>
+    <div class="btn mini" id="zoomIn"><i class="fas fa-plus"></i></div>
+    <div class="btn mini primary" id="fitAll"><i class="fas fa-compress-arrows-alt"></i></div>
+    <div class="btn mini primary" id="centerRoot"><i class="fas fa-crosshairs"></i></div>
+  </div>
+
+  <script>
+    // ===============================
+    // DATA (Ícones atualizados para FontAwesome classes)
+    // ===============================
+    const DATA = {
+      id: "tenaz",
+      icon: "fa-solid fa-microphone-lines", // Moderno
+      theme: "accent-mix",
+      title: "MOVIMENTO TENAZ (DF)",
+      desc: "Na ponta: captação, mobilização e transformação via cultura.",
+      chips: [
+        { k: "Soma total", v: "2.638.331" },
+        { k: "Rede", v: "2,6M+" }
+      ],
+      children: [
+        {
+          id: "midia",
+          icon: "fa-solid fa-bullhorn", // Moderno
+          theme: "accent-gold",
+          title: "MÍDIA / RAP / NOTÍCIAS",
+          desc: "Distribuição e amplificação (rap, notícias, cultura urbana).",
+          chips: [{k:"Categoria", v:"Mídia"}],
+          children: [
+            { id:"rapdfoficial", icon:"fa-regular fa-newspaper", theme:"accent-gold", title:"@rapdfoficial", url:"https://www.instagram.com/rapdfoficial", desc:"509 mil — mídia do Rap DF", chips:[{k:"Seguidores", v:"509 mil"}] },
+            { id:"minhacapital", icon:"fa-solid fa-city", theme:"accent-gold", title:"@minhacapital", url:"https://www.instagram.com/minhacapital", desc:"410 mil — mídia/cidadania", chips:[{k:"Seguidores", v:"410 mil"}] },
+            { id:"jornaldorap", icon:"fa-solid fa-rss", theme:"accent-gold", title:"@jornaldorap", url:"https://www.instagram.com/jornaldorap", desc:"385 mil — portal do rap", chips:[{k:"Seguidores", v:"385 mil"}] },
+            { id:"rapbrasilia", icon:"fa-solid fa-headphones", theme:"accent-gold", title:"@rapbrasilia", url:"https://www.instagram.com/rapbrasilia", desc:"318 mil — cultura urbana DF", chips:[{k:"Seguidores", v:"318 mil"}] },
+            { id:"taguadadepre", icon:"fa-solid fa-location-dot", theme:"accent-gold", title:"@taguadadepre", url:"https://www.instagram.com/taguadadepre", desc:"165 mil — mídia local", chips:[{k:"Seguidores", v:"165 mil"}] },
+          ]
+        },
+        {
+          id: "artistas",
+          icon: "fa-solid fa-star", // Moderno
+          theme: "accent-purple",
+          title: "ARTISTAS / CREDIBILIDADE",
+          desc: "Validação, referência e autoridade artística.",
+          chips: [{k:"Categoria", v:"Artistas"}],
+          children: [
+            { id:"pacificadores", icon:"fa-solid fa-users-viewfinder", theme:"accent-purple", title:"@pacificadores", url:"https://www.instagram.com/pacificadores", desc:"454 mil — rede/mobilização", chips:[{k:"Seguidores", v:"454 mil"}] },
+            { id:"misael", icon:"fa-solid fa-crown", theme:"accent-purple", title:"@misael", url:"https://www.instagram.com/misael", desc:"312 mil — referência nacional", chips:[{k:"Seguidores", v:"312 mil"}] },
+            { id:"guindart_121", icon:"fa-solid fa-music", theme:"accent-purple", title:"@guindart_121", url:"https://www.instagram.com/guindart_121", desc:"253 mil — referência nacional", chips:[{k:"Seguidores", v:"253 mil"}] },
+            { id:"dg1_121", icon:"fa-solid fa-medal", theme:"accent-purple", title:"@dg1.121", url:"https://www.instagram.com/dg1.121", desc:"48,8 mil — artista/jurado", chips:[{k:"Seguidores", v:"48,8 mil"}] },
+          ]
+        },
+        {
+          id: "tv",
+          icon: "fa-solid fa-tv", // Moderno
+          theme: "accent-mix",
+          title: "TV / QUADRO (AMPLIFICADOR)",
+          desc: "Tenaz Voice em TV aberta (amplia alcance e credibilidade).",
+          chips: [{k:"Categoria", v:"TV Aberta"}],
+          children: [
+            { id:"paunamaquinatv", icon:"fa-solid fa-video", theme:"accent-mix", title:"@paunamaquinatv", url:"https://www.instagram.com/paunamaquinatv", desc:"24,3 mil — programa parceiro", chips:[{k:"Seguidores", v:"24,3 mil"}] },
+          ]
+        },
+        {
+          id: "comercial",
+          icon: "fa-solid fa-handshake", // Moderno
+          theme: "accent-soft",
+          title: "COMERCIAL / APOIO LOCAL",
+          desc: "Apoios e parceiros que sustentam ações e produção.",
+          chips: [{k:"Categoria", v:"Apoio"}],
+          children: [
+            {
+              id:"sub_auto",
+              icon:"fa-solid fa-car",
+              theme:"accent-soft",
+              title:"Automotivo / Rodas",
+              desc:"Ativações, público e cultura.",
+              children:[
+                { id:"rckpneus", icon:"fa-solid fa-circle-notch", theme:"accent-soft", title:"@rckpneus", url:"https://www.instagram.com/rckpneus", desc:"18,5 mil — parceiro local", chips:[{k:"Seguidores", v:"18,5 mil"}] },
+                { id:"8k_prime", icon:"fa-solid fa-flag-checkered", theme:"accent-soft", title:"@8k_prime", url:"https://www.instagram.com/8k_prime", desc:"2.126 — grupo/auto", chips:[{k:"Seguidores", v:"2.126"}] },
+              ]
+            },
+            {
+              id:"sub_artes",
+              icon:"fa-solid fa-masks-theater",
+              theme:"accent-soft",
+              title:"Artes / Eventos / Cultura",
+              desc:"Apoio de palco e produção cultural.",
+              children:[
+                { id:"b12_bellota", icon:"fa-solid fa-ticket", theme:"accent-soft", title:"@b12.bellota", url:"https://www.instagram.com/b12.bellota", desc:"19,7 mil — artes/eventos", chips:[{k:"Seguidores", v:"19,7 mil"}] },
+              ]
+            },
+            {
+              id:"sub_criadores",
+              icon:"fa-solid fa-brain",
+              theme:"accent-soft",
+              title:"Criadores / Produção / Apoio",
+              desc:"Bastidores e suporte.",
+              children:[
+                { id:"mcdizzin", icon:"fa-solid fa-pen-nib", theme:"accent-soft", title:"@mcdizzin", url:"https://www.instagram.com/mcdizzin", desc:"14,4 mil — criador", chips:[{k:"Seguidores", v:"14,4 mil"}] },
+                { id:"_elost_", icon:"fa-solid fa-layer-group", theme:"accent-soft", title:"@_elost__", url:"https://www.instagram.com/_elost__", desc:"14 mil — criador", chips:[{k:"Seguidores", v:"14 mil"}] },
+                { id:"eclensouza", icon:"fa-solid fa-user-check", theme:"accent-soft", title:"@eclensouza", url:"https://www.instagram.com/eclensouza", desc:"2.638 — apoio", chips:[{k:"Seguidores", v:"2.638"}] },
+                { id:"mattexv_", icon:"fa-solid fa-user-check", theme:"accent-soft", title:"@mattexv_", url:"https://www.instagram.com/mattexv_", desc:"2.590 — apoio", chips:[{k:"Seguidores", v:"2.590"}] },
+                { id:"clistnedutra", icon:"fa-solid fa-user-check", theme:"accent-soft", title:"@clistnedutra", url:"https://www.instagram.com/clistnedutra", desc:"1.132 — apoio", chips:[{k:"Seguidores", v:"1.132"}] },
+                { id:"prod_jweed", icon:"fa-solid fa-sliders", theme:"accent-soft", title:"@prod.jweed", url:"https://www.instagram.com/prod.jweed", desc:"1.045 — produção", chips:[{k:"Seguidores", v:"1.045"}] },
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    // ===============================
+    // Build Org Chart
+    // ===============================
+    const chart = document.getElementById("chart");
+    function el(tag, attrs = {}, children = []){
+      const n = document.createElement(tag);
+      for(const [k,v] of Object.entries(attrs)){
+        if(k === "class") n.className = v;
+        else if(k.startsWith("on") && typeof v === "function") n.addEventListener(k.slice(2), v);
+        else if(v !== null && v !== undefined) n.setAttribute(k, v);
+      }
+      for(const c of children){
+        if(typeof c === "string") n.appendChild(document.createTextNode(c));
+        else if(c) n.appendChild(c);
+      }
+      return n;
+    }
+
+    function renderNode(node){
+      const hasChildren = Array.isArray(node.children) && node.children.length > 0;
+
+      const toggleBtn = el("div", {
+        class: "toggle",
+        role: "button",
+        tabindex: "0",
+        "aria-label": hasChildren ? "Expandir/retrair" : "Sem filhos",
+        "aria-disabled": hasChildren ? "false" : "true",
+        "data-action": "toggle"
+      }, [hasChildren ? el("i", {class:"fas fa-minus"}) : el("i", {class:"fas fa-circle", style:"font-size:6px"})]); 
+
+      const isInstagramNode = node.title.startsWith('@') && node.url;
+      const displayTitle = isInstagramNode ? 
+          el("a", { 
+              class: "label-link",
+              href: node.url, 
+              target: "_blank",
+              title: `Acessar Instagram de ${node.title}`
+          }, [
+              el("span", { class:"label", "data-text": "label" }, [node.title || "—"]),
+              el("i", { class: "fab fa-instagram link-icon" })
+          ])
+          : 
+          el("span", { class:"label", "data-text": "label" }, [node.title || "—"]);
+
+      // AJUSTE ÚNICO: Cria elemento <i> com a classe do ícone vinda do JSON
+      const headLeft = el("div", { class:"left" }, [
+        el("div", { class:"icon" }, [ el("i", { class: node.icon || "fa-solid fa-circle" }) ]),
+        el("div", {}, [
+          displayTitle 
+        ])
+      ]);
+
+      const head = el("div", { class:"head" }, [headLeft, toggleBtn]);
+      const desc = el("div", { class:"desc", "data-text": "desc" }, [node.desc || ""]);
+      const meta = el("div", { class:"meta" }, (node.chips || []).map(ch => {
+        return el("div", { class:"chip" }, [
+          `${ch.k}: `,
+          el("b", {}, [String(ch.v)])
+        ]);
+      }));
+
+      const content = el("div", { class:"content" }, [head, desc, meta]);
+      
+      const initialClass = `node ${node.theme || ""}`; 
+      const nodeCard = el("div", { class: initialClass, "data-id": node.id || "" }, [content]);
+
+      const li = el("li", { "data-id": node.id || "" }, [nodeCard]);
+
+      if(hasChildren){
+        const ulClass = node.children.length === 1 ? "single" : "";
+        const ul = el("ul", { class: ulClass }, node.children.map(renderNode));
+        li.appendChild(ul);
+      }
+      return li;
+    }
+
+    function build(){
+      chart.innerHTML = "";
+      
+      const rootLi = renderNode(DATA);
+      const rootUl = el("ul", { class: "single" }, [rootLi]);
+      chart.appendChild(rootUl);
+      
+      walkLis(li => {
+        setCollapsed(li, true); 
+      });
+      
+      bindInteractions();
+    }
+
+    // ===============================
+    // Pan / Zoom engine (with smooth transitions)
+    // ===============================
+    const stage = document.getElementById("stage");
+    const zoomLayer = document.getElementById("zoomLayer");
+
+    const ZOOM = {
+      scale: 1,
+      tx: 0,
+      ty: 0,
+      min: 0.28,
+      max: 1.8
+    };
+
+    const TRANSITION_DURATION_MS = 450; 
+    const TRANSITION_EASING = "cubic-bezier(0.25, 0.46, 0.45, 0.94)"; 
+
+    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+
+    function applyTransform(){
+      zoomLayer.style.transform = `translate(${ZOOM.tx}px, ${ZOOM.ty}px) scale(${ZOOM.scale})`;
+    }
+
+    function setTransform({scale, tx, ty}, animate=true){
+      if(scale !== undefined) ZOOM.scale = clamp(scale, ZOOM.min, ZOOM.max);
+      if(tx !== undefined) ZOOM.tx = tx;
+      if(ty !== undefined) ZOOM.ty = ty;
+
+      if(animate){
+        zoomLayer.style.transition = `transform ${TRANSITION_DURATION_MS}ms ${TRANSITION_EASING}`;
+        requestAnimationFrame(() => {
+          applyTransform();
+          setTimeout(() => (zoomLayer.style.transition = ""), TRANSITION_DURATION_MS + 20);
+        });
+      } else {
+        zoomLayer.style.transition = "";
+        applyTransform();
+      }
+    }
+
+    function fitToElement(targetEl, padding=50){
+      if(!targetEl) return;
+      const prev = {scale: ZOOM.scale, tx: ZOOM.tx, ty: ZOOM.ty};
+      setTransform({scale: 1, tx: 0, ty: 0}, false);
+
+      const stageRect = stage.getBoundingClientRect();
+      const rect = targetEl.getBoundingClientRect();
+
+      const w = rect.width;
+      const h = rect.height;
+
+      const availW = stageRect.width - padding*2;
+      const availH = stageRect.height - padding*2;
+
+      const s = clamp(Math.min(availW / w, availH / h), ZOOM.min, ZOOM.max);
+
+      const cx = (rect.left - stageRect.left) + w/2;
+      const cy = (rect.top - stageRect.top) + h/2;
+
+      const tx = stageRect.width/2 - cx * s;
+      const ty = stageRect.height/2 - cy * s;
+
+      setTransform({scale: s, tx, ty}, true);
+    }
+
+    function fitAll(){
+      const container = document.getElementById("chart");
+      fitToElement(container, 70);
+    }
+
+    function centerRoot(){
+      const root = chart.querySelector("li[data-id='tenaz']") || chart.querySelector("li");
+      if(!root) return;
+      fitToElement(root.querySelector(".node") || root, 140);
+    }
+
+    document.getElementById("zoomIn").addEventListener("click", () => {
+      setTransform({scale: ZOOM.scale + 0.10}, true);
+    });
+    document.getElementById("zoomOut").addEventListener("click", () => {
+      setTransform({scale: ZOOM.scale - 0.10}, true);
+    });
+    document.getElementById("fitAll").addEventListener("click", () => fitAll());
+    document.getElementById("fitAllTop").addEventListener("click", () => fitAll());
+    document.getElementById("centerRoot").addEventListener("click", () => centerRoot());
+
+    stage.addEventListener("wheel", (e) => {
+      e.preventDefault();
+
+      const stageRect = stage.getBoundingClientRect();
+
+      if(e.ctrlKey || e.metaKey){
+        const mouseX = e.clientX - stageRect.left;
+        const mouseY = e.clientY - stageRect.top;
+
+        const oldScale = ZOOM.scale;
+        const delta = -Math.sign(e.deltaY) * 0.07;
+        const newScale = clamp(oldScale + delta, ZOOM.min, ZOOM.max);
+
+        const dx = mouseX - ZOOM.tx;
+        const dy = mouseY - ZOOM.ty;
+
+        const ratio = newScale / oldScale;
+
+        const tx = mouseX - dx * ratio;
+        const ty = mouseY - dy * ratio;
+
+        setTransform({scale: newScale, tx, ty}, false);
+        return;
+      }
+
+      const panX = (e.shiftKey ? e.deltaY : e.deltaX);
+      const panY = (e.shiftKey ? 0 : e.deltaY);
+
+      setTransform({tx: ZOOM.tx - panX, ty: ZOOM.ty - panY}, false);
+    }, {passive:false});
+
+    let dragging = false;
+    let startX = 0, startY = 0, startTx = 0, startTy = 0;
+
+    stage.addEventListener("pointerdown", (e) => {
+      dragging = true;
+      stage.classList.add("grabbing");
+      stage.setPointerCapture(e.pointerId);
+      startX = e.clientX;
+      startY = e.clientY;
+      startTx = ZOOM.tx;
+      startTy = ZOOM.ty;
+    });
+
+    stage.addEventListener("pointermove", (e) => {
+      if(!dragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      setTransform({tx: startTx + dx, ty: startTy + dy}, false);
+    });
+
+    stage.addEventListener("pointerup", () => {
+      dragging = false;
+      stage.classList.remove("grabbing");
+    });
+    stage.addEventListener("pointercancel", () => {
+      dragging = false;
+      stage.classList.remove("grabbing");
+    });
+
+    const AUTO_FIT_ON_TOGGLE = true; 
+
+    function setCollapsed(li, collapsed){
+      if(!li) return;
+      if(collapsed) li.classList.add("collapsed");
+      else li.classList.remove("collapsed");
+
+      const toggle = li.querySelector(":scope > .node .toggle[data-action='toggle']");
+      if(toggle && toggle.getAttribute("aria-disabled") === "false"){
+        // Troca ícone do botão
+        toggle.innerHTML = collapsed ? '<i class="fas fa-plus"></i>' : '<i class="fas fa-minus"></i>';
+      }
+    }
+
+    function bindInteractions(){
+      chart.querySelectorAll(".toggle[data-action='toggle']").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const li = e.target.closest("li");
+          if(!li) return;
+          const disabled = btn.getAttribute("aria-disabled") === "true";
+          if(disabled) return;
+
+          const willCollapse = !li.classList.contains("collapsed");
+          setCollapsed(li, willCollapse);
+
+          requestAnimationFrame(() => {
+            if(AUTO_FIT_ON_TOGGLE){
+              const target = willCollapse ? (li.querySelector(":scope > .node") || li) : li;
+              fitToElement(target, willCollapse ? 180 : 80);
+            } else {
+              fitToElement(li.querySelector(":scope > .node") || li, 180);
+            }
+          });
+        });
+
+        btn.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+
+      chart.querySelectorAll(".toggle, .node").forEach(el => {
+        el.addEventListener("pointerdown", (e) => {
+          if(e.target.closest(".toggle")) e.stopPropagation();
+        });
+      });
+    }
+
+    function walkLis(cb){
+      chart.querySelectorAll("li").forEach(cb);
+    }
+
+    document.getElementById("expandAll").addEventListener("click", () => {
+      walkLis(li => setCollapsed(li, false));
+      requestAnimationFrame(() => fitAll());
+    });
+
+    document.getElementById("collapseAll").addEventListener("click", () => {
+      walkLis(li => setCollapsed(li, true));
+      requestAnimationFrame(() => centerRoot());
+    });
+
+    const input = document.getElementById("search");
+    const clear = document.getElementById("clear");
+
+    function applySearch(q){
+      q = (q || "").trim().toLowerCase();
+      const nodes = Array.from(chart.querySelectorAll(".node"));
+      nodes.forEach(n => n.classList.remove("match", "dim"));
+
+      if(!q){
+        nodes.forEach(n => n.classList.remove("dim"));
+        return;
+      }
+
+      const matches = nodes.filter(n => n.innerText.toLowerCase().includes(q));
+
+      nodes.forEach(n => {
+        if(matches.includes(n)) n.classList.add("match");
+        else n.classList.add("dim");
+      });
+
+      matches.forEach(n => {
+        let li = n.closest("li");
+        while(li){
+          setCollapsed(li, false);
+          li = li.parentElement?.closest("li") || null;
+        }
+      });
+
+      requestAnimationFrame(() => {
+        if(matches[0]) fitToElement(matches[0].closest("li") || matches[0], 140);
+      });
+    }
+
+    input.addEventListener("input", (e) => applySearch(e.target.value));
+    clear.addEventListener("click", () => {
+      input.value = "";
+      applySearch("");
+      input.focus();
+      requestAnimationFrame(() => fitAll());
+    });
+
+    build();
+
+    requestAnimationFrame(() => {
+      centerRoot(); 
+      setTimeout(() => centerRoot(), 250);
+    });
+  </script>
+</body>
+</html>
