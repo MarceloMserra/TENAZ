@@ -1,19 +1,4483 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
+
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=https://lookerstudio.google.com/reporting/909491f3-f2e2-4274-ae0d-c666f3b94528">
-    <title>Dashboard TENAZ - Relatório de Inscrições</title>
-    <script>
-      // Opcional: Se o meta refresh falhar por algum motivo, este script força o redirecionamento.
-      window.onload = function() {
-        setTimeout(function() {
-            window.location.href = 'https://lookerstudio.google.com/reporting/909491f3-f2e2-4274-ae0d-c666f3b94528';
-        }, 100);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard TENAZ</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            tenaz: {
+              gold: '#e9ac15',
+              purple: '#5e1999',
+              dark: '#111827',
+              card: '#1f2937'
+            }
+          },
+          fontFamily: {
+            sans: ['Urbanist', 'sans-serif'],
+          }
+        }
       }
-    </script>
+    }
+  </script>
+
+  <!-- Chart.js + Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+  <style>
+    body {
+      font-family: 'Urbanist', sans-serif;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #111827;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4b5563;
+    }
+  </style>
 </head>
-<body>
-    <p>Você será redirecionado para o <a href="https://lookerstudio.google.com/reporting/909491f3-f2e2-4274-ae0d-c666f3b94528">Dashboard TENAZ</a>.</p>
+
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+
+  <!-- Loading -->
+  <div id="loading-screen"
+    class="fixed inset-0 bg-gray-900 z-50 flex items-center justify-center transition-opacity duration-500">
+    <div class="flex flex-col items-center">
+      <i class="fas fa-circle-notch fa-spin text-4xl text-tenaz-gold mb-4"></i>
+      <p class="text-sm uppercase tracking-widest text-gray-500">Carregando...</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-gray-800 border-b border-gray-700 sticky top-0 z-40 shadow-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <img src="/images/favicon.png" alt="Logo" class="h-8 w-auto">
+        <h1 class="text-xl font-bold tracking-tight">Analytics <span class="text-tenaz-gold">Dashboard</span></h1>
+      </div>
+      <div class="text-xs text-gray-400">
+        Atualizado em: <span id="last-update" class="text-tenaz-gold font-mono">--/--/----</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container mx-auto px-6 py-8 flex-grow">
+
+    <!-- Filters -->
+    <div
+      class="bg-gray-800 rounded-xl p-6 mb-8 shadow-lg border border-gray-700 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div class="flex items-center gap-2 text-gray-400">
+        <i class="fas fa-filter"></i>
+        <span class="text-sm font-semibold uppercase tracking-wider">Filtros</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+        <select id="filter-bairro"
+          class="bg-gray-700 border-none text-white text-sm rounded-lg focus:ring-2 focus:ring-tenaz-gold block w-full sm:w-48 p-2.5">
+          <option value="all">Todos os Bairros</option>
+        </select>
+        <select id="filter-area"
+          class="bg-gray-700 border-none text-white text-sm rounded-lg focus:ring-2 focus:ring-tenaz-gold block w-full sm:w-48 p-2.5">
+          <option value="all">Todas as Áreas</option>
+        </select>
+        <button onclick="resetFilters()"
+          class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition">
+          Limpar
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg relative overflow-hidden">
+        <div class="absolute right-0 top-0 p-4 opacity-5 text-tenaz-gold"><i class="fas fa-users text-6xl"></i></div>
+        <p class="text-xs font-bold text-gray-500 uppercase">Total Inscritos</p>
+        <h3 id="kpi-total" class="text-3xl font-bold text-white mt-1">0</h3>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg relative overflow-hidden">
+        <div class="absolute right-0 top-0 p-4 opacity-5 text-tenaz-purple"><i class="fas fa-briefcase text-6xl"></i>
+        </div>
+        <p class="text-xs font-bold text-gray-500 uppercase">Área Destaque</p>
+        <h3 id="kpi-top-area" class="text-xl font-bold text-white mt-1 truncate">-</h3>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg relative overflow-hidden">
+        <div class="absolute right-0 top-0 p-4 opacity-5 text-blue-500"><i class="fas fa-map-marker-alt text-6xl"></i>
+        </div>
+        <p class="text-xs font-bold text-gray-500 uppercase">Bairro + Ativo</p>
+        <h3 id="kpi-top-bairro" class="text-xl font-bold text-white mt-1 truncate">-</h3>
+      </div>
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg relative overflow-hidden">
+        <div class="absolute right-0 top-0 p-4 opacity-5 text-green-500"><i class="fas fa-heart text-6xl"></i></div>
+        <p class="text-xs font-bold text-gray-500 uppercase">Interesse Principal</p>
+        <h3 id="kpi-top-interest" class="text-xl font-bold text-white mt-1 truncate">-</h3>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <!-- Timeline -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg lg:col-span-2">
+        <h3 class="text-lg font-bold text-white mb-4">Crescimento da Comunidade (Cumulativo)</h3>
+        <div class="chart-container" style="height: 350px;">
+          <canvas id="chart-timeline"></canvas>
+        </div>
+      </div>
+
+      <!-- Areas -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg">
+        <h3 class="text-lg font-bold text-white mb-4">Áreas de Atuação</h3>
+        <div class="chart-container">
+          <canvas id="chart-areas"></canvas>
+        </div>
+      </div>
+
+      <!-- Bairros -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg">
+        <h3 class="text-lg font-bold text-white mb-4">Top Bairros</h3>
+        <div class="chart-container">
+          <canvas id="chart-bairros"></canvas>
+        </div>
+      </div>
+
+      <!-- Interests -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg">
+        <h3 class="text-lg font-bold text-white mb-4">Interesses</h3>
+        <div class="chart-container">
+          <canvas id="chart-interesses"></canvas>
+        </div>
+      </div>
+
+      <!-- Origin -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-lg">
+        <h3 class="text-lg font-bold text-white mb-4">Origem</h3>
+        <div class="chart-container">
+          <canvas id="chart-origem"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-gray-800 border-t border-gray-700 py-6 mt-8">
+    <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+      &copy; 2025 Movimento Tenaz
+    </div>
+  </footer>
+
+  <script>
+    // Init Plugins
+    Chart.register(ChartDataLabels);
+
+    // --- Init Logic ---
+    
+        let rawData = [];
+        const embeddedData = {
+  "meta": {
+    "generatedAt": "2026-02-10T18:28:24.510Z",
+    "sourceFile": "Inscrições Studio Tenaz (2).xlsx"
+  },
+  "stats": {
+    "total": 221,
+    "areas": {
+      "Música": 191,
+      "Comunidade": 3,
+      "Audiovisual": 7,
+      "Outro": 13,
+      "Estudante": 4,
+      "Podcast": 3
+    },
+    "bairros": {
+      "Residencial Mangueira": 1,
+      "Jardim Novo Mundo": 1,
+      "Samambaia": 20,
+      "Santa Maria": 8,
+      "Parque Faro": 1,
+      "Park Way": 1,
+      "Ceilândia": 29,
+      "Campos Lindos Goiás": 1,
+      "São Sebastião": 1,
+      "Camping Club": 2,
+      "Paranoá": 4,
+      "Norte": 3,
+      "Lago Azul": 1,
+      "Casa 26": 1,
+      "Centro": 4,
+      "Morro Da Cruz": 1,
+      "26 De Setembro": 1,
+      "Del Lago": 1,
+      "Massões Odisseia": 2,
+      "Qnl": 1,
+      "Arapoangas": 4,
+      "Gama": 5,
+      "Areal": 3,
+      "Planaltina": 7,
+      "Taguatinga": 9,
+      "Sobradinho": 10,
+      "Recanto das Emas": 6,
+      "Ipanema": 2,
+      "Sol Nascente": 4,
+      "Aniqueiras": 1,
+      "Brasília": 1,
+      "Pedregal": 2,
+      "Parque Rio Branco": 2,
+      "Candangolândia": 2,
+      "Sobraidnho 2": 1,
+      "Parque Estrela Dalva IX": 1,
+      "M Norte": 2,
+      "Águas Claras": 2,
+      "Tororo": 1,
+      "Parque Marajó": 3,
+      "FRIBURGO": 1,
+      "Estrutural": 1,
+      "Águas Lindas": 2,
+      "Sabino Leite": 1,
+      "Paulo Vi": 1,
+      "Vila Operária, Rua 5 Casa 3": 1,
+      "Estrela Dalva 3": 1,
+      "Qs20": 1,
+      "Parque Napolis A": 1,
+      "Buritizinho": 2,
+      "Jardim Ingá": 3,
+      "Marajó": 1,
+      "Riacho Fundo": 2,
+      "Itapoã": 1,
+      "Parque Napolis": 1,
+      "12 Hc": 1,
+      "Dom Francisco": 1,
+      "Residencial Gramado": 2,
+      "Portal Da Barragem": 1,
+      "Residencial Boa Vista": 1,
+      "Beatriz 1": 1,
+      "Zona Rural": 1,
+      "Ypiranga": 1,
+      "Catulina": 1,
+      "Cidade Jardim": 1,
+      "Vila São José": 1,
+      "Boa Vista 1": 1,
+      "Jardim California": 1,
+      "Núcleo Bandeirante": 1,
+      "Expansão Do Setor\"O\"": 1,
+      "Vila Esperança": 1,
+      "Paracatuzinho": 1,
+      "Vila Nova": 1,
+      "Setor Sul": 1,
+      "Arapoanga": 1,
+      "Rua 5": 1,
+      "Buritis 04": 1,
+      "Jardim Abc": 2,
+      "Guará": 2,
+      "Vila Buritis": 1,
+      "Recreio Da Barragem": 1,
+      "Mansões Odisseia": 1,
+      "Criastal": 1,
+      "Asa Norte": 1,
+      "Oeste": 1,
+      "Total Ville": 1,
+      "Jr Roriz": 1,
+      "Valparaíso": 1,
+      "Arniqueiras": 1,
+      "Jardim Oriente": 1,
+      "Vicente Pires": 1,
+      "Jardim ABC": 1,
+      "Leste": 1,
+      "Parque Estrela Dalva 4": 1,
+      "P’sul": 1,
+      "Qng": 1,
+      "Praia De Carapebus": 1,
+      "Setor Habitacional Do Setor Imperatriz": 1,
+      "Residencial Mangueiras": 1,
+      "Lagoa Dos Santo ( Los Santos)": 1,
+      "Jardim Das Oliveiras": 1
+    },
+    "interesses": {
+      "ApoiarMovimento": 41,
+      "ParticiparCursos": 26,
+      "UsarEquipamentos": 124,
+      "Outro": 28,
+      "SaberMais": 2
+    },
+    "origens": {
+      "Instagram": 153,
+      "Indicacao": 50,
+      "EventoLocal": 6,
+      "Midia": 6,
+      "Outro": 6
+    },
+    "timeline": {
+      "2025-11-21": 37,
+      "2025-11-22": 68,
+      "2025-11-23": 21,
+      "2025-11-24": 16,
+      "2025-11-25": 9,
+      "2025-11-26": 3,
+      "2025-11-27": 9,
+      "2025-11-29": 1,
+      "2025-11-30": 2,
+      "2025-12-01": 2,
+      "2025-12-02": 3,
+      "2025-12-03": 3,
+      "2025-12-04": 3,
+      "2025-12-05": 4,
+      "2025-12-10": 2,
+      "2025-12-11": 1,
+      "2025-12-12": 2,
+      "2025-12-14": 1,
+      "2025-12-17": 10,
+      "2025-12-18": 1,
+      "2025-12-19": 1,
+      "2025-12-20": 1,
+      "2025-12-27": 1,
+      "2026-01-08": 2,
+      "2026-01-11": 1,
+      "2026-01-12": 1,
+      "2026-01-19": 2,
+      "2026-01-22": 1,
+      "2026-01-23": 1,
+      "2026-01-24": 3,
+      "2026-01-25": 4,
+      "2026-01-29": 1,
+      "2026-01-31": 1,
+      "2026-02-05": 2,
+      "2026-02-09": 1
+    }
+  },
+  "records": [
+    {
+      "Quantidade": 1,
+      "Timestamp": 45982.80375990741,
+      "bairro": "Residencial Mangueira",
+      "cep": 72900030,
+      "cidade": "Santo Antônio do descoberto ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T19:17:24.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 2,
+      "Timestamp": 45982.80817851852,
+      "bairro": "Jardim Novo Mundo",
+      "cep": 74703010,
+      "cidade": "Goiânia ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T19:23:46.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 3,
+      "Timestamp": 45982.81334421296,
+      "bairro": "Samambaia",
+      "cep": 72311813,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T19:31:12.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 4,
+      "Timestamp": 45982.8199837963,
+      "bairro": "Santa Maria",
+      "cep": 72505412,
+      "cidade": "Santa Maria ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T19:40:46.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 5,
+      "Timestamp": 45982.82157792824,
+      "bairro": "Parque Faro",
+      "cep": 72850150,
+      "cidade": "Luziânia ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T19:43:04.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 6,
+      "Timestamp": 45982.82727091435,
+      "bairro": "Park Way",
+      "cep": 71741307,
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T19:51:16.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 7,
+      "Timestamp": 45982.83555682871,
+      "bairro": "Ceilândia",
+      "cep": "CEP 72235805",
+      "cidade": "Ceilândia psul",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:03:12.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 8,
+      "Timestamp": 45982.84202305556,
+      "bairro": "Campos Lindos Goiás",
+      "cep": 73850000,
+      "cidade": "Cristalina ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:12:30.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 9,
+      "Timestamp": 45982.843166770836,
+      "bairro": "São Sebastião",
+      "cep": 71691135,
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:14:09.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 10,
+      "Timestamp": 45982.84953196759,
+      "bairro": "Samambaia",
+      "cep": 72322575,
+      "cidade": "Brasília df",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:23:19.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 11,
+      "Timestamp": 45982.85752474537,
+      "bairro": "Ceilândia",
+      "cep": 72236800,
+      "cidade": "Ceilandia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:34:50.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 12,
+      "Timestamp": 45982.86098498842,
+      "bairro": "Samambaia",
+      "cep": 72308307,
+      "cidade": "Samammbaia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:39:49.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 13,
+      "Timestamp": 45982.86959072917,
+      "bairro": "Camping Club",
+      "cep": 72914018,
+      "cidade": "Aguas Lindas",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T20:52:12.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 14,
+      "Timestamp": 45982.87812081019,
+      "bairro": "Samambaia",
+      "cep": 72319004,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:04:29.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 15,
+      "Timestamp": 45982.881053784724,
+      "bairro": "Paranoá",
+      "cep": 71587480,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:08:43.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 16,
+      "Timestamp": 45982.882399131944,
+      "bairro": "Norte",
+      "cep": 72319013,
+      "cidade": "Samambaia-df",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:10:39.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 17,
+      "Timestamp": 45982.88306475694,
+      "bairro": "Lago Azul",
+      "cep": 72865135,
+      "cidade": "Luziânia",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:11:36.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 18,
+      "Timestamp": 45982.89008515046,
+      "bairro": "Samambaia",
+      "cep": 72316227,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "@__theNandz",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:21:43.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 19,
+      "Timestamp": 45982.89384046296,
+      "bairro": "Casa 26",
+      "cep": 72309313,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Comunidade",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:27:07.000Z",
+      "area": "Comunidade",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 20,
+      "Timestamp": 45982.897708206016,
+      "bairro": "Centro",
+      "cep": 75265000,
+      "cidade": "Vianópolis ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:32:41.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 21,
+      "Timestamp": 45982.89827668981,
+      "bairro": "Morro Da Cruz",
+      "cep": 71693500,
+      "cidade": "São sebastião ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:33:31.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 22,
+      "Timestamp": 45982.90661957176,
+      "bairro": "26 De Setembro",
+      "cep": "72145-060",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "-",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:45:31.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 23,
+      "Timestamp": 45982.91254513889,
+      "bairro": "Del Lago",
+      "cep": 71490000,
+      "cidade": "Itap",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T21:54:03.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 24,
+      "Timestamp": 45982.917796458336,
+      "bairro": "Massões Odisseia",
+      "cep": 72920010,
+      "cidade": "águas lindas ",
+      "estado": "go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T22:01:37.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 25,
+      "Timestamp": 45982.91965165509,
+      "bairro": "Samambaia",
+      "cep": 72303012,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "twitter": "@mcrapperdf",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T22:04:17.000Z",
+      "area": "Audiovisual",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 26,
+      "Timestamp": 45982.92238719907,
+      "bairro": "Qnl",
+      "cep": 72160803,
+      "cidade": "Taguatinga Norte ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T22:08:14.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 27,
+      "Timestamp": 45982.92469119213,
+      "bairro": "Arapoangas",
+      "cep": 73366664,
+      "cidade": "Planaltina ",
+      "estado": "df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T22:11:33.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 28,
+      "Timestamp": 45982.960347789354,
+      "bairro": "Ceilândia",
+      "cep": 72225252,
+      "cidade": "BrasÍlia",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:02:54.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 29,
+      "Timestamp": 45982.963998252315,
+      "bairro": "Gama",
+      "cep": 72450040,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:08:09.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 30,
+      "Timestamp": 45982.966334756944,
+      "bairro": "Areal",
+      "cep": 71968360,
+      "cidade": "Arniqueira",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:11:31.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 31,
+      "Timestamp": 45982.96772678241,
+      "bairro": "Centro",
+      "cep": 73825000,
+      "cidade": "Vila Boa",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:13:31.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 32,
+      "Timestamp": 45982.968401736114,
+      "bairro": "Planaltina",
+      "cep": 73310300,
+      "cidade": "Planaltina ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:14:29.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 33,
+      "Timestamp": 45982.97903724537,
+      "bairro": "Planaltina",
+      "cep": 73403345,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "twitter": "@handriellx",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:29:48.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 34,
+      "Timestamp": 45982.98106996527,
+      "bairro": "Taguatinga",
+      "cep": "Qsc 19 chácara 26 conjunto A1 ",
+      "cidade": "DF",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:32:44.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 35,
+      "Timestamp": 45982.98370935185,
+      "bairro": "Taguatinga",
+      "cep": 72120250,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "EventoLocal",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:36:32.000Z",
+      "area": "Outro",
+      "interesse": "ApoiarMovimento",
+      "origem": "EventoLocal",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 36,
+      "Timestamp": 45982.99042940972,
+      "bairro": "Samambaia",
+      "cep": 72327013,
+      "cidade": "Samambaia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:46:13.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 37,
+      "Timestamp": 45982.99608881945,
+      "bairro": "Sobradinho",
+      "cep": 73017013,
+      "cidade": "Sobradinho ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Midia",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-21T23:54:22.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Midia",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 38,
+      "Timestamp": 45983.00162820602,
+      "bairro": "Recanto das Emas",
+      "cep": "72610-350",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T00:02:20.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 39,
+      "Timestamp": 45983.02671924769,
+      "bairro": "Ceilândia",
+      "cep": 72270214,
+      "cidade": "Ceilandia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "@velabranka",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T00:38:28.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 40,
+      "Timestamp": 45983.02892851851,
+      "bairro": "Ipanema",
+      "cep": 72872033,
+      "cidade": "Valparaiso",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T00:41:39.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 41,
+      "Timestamp": 45983.0319642824,
+      "bairro": "Sol Nascente",
+      "cep": 72236800,
+      "cidade": "Brasília",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T00:46:01.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 42,
+      "Timestamp": 45983.065810775464,
+      "bairro": "Ceilândia",
+      "cep": 72275356,
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T01:34:46.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 43,
+      "Timestamp": 45983.12039592593,
+      "bairro": "Aniqueiras",
+      "cep": "71989-300",
+      "cidade": "Arniqueiras",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T02:53:22.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 44,
+      "Timestamp": 45983.12217982639,
+      "bairro": "Brasília",
+      "cep": 72120065,
+      "cidade": "Taguatinga Norte ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T02:55:56.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "21/11/2025"
+    },
+    {
+      "Quantidade": 45,
+      "Timestamp": 45983.21186971065,
+      "bairro": "Pedregal",
+      "cep": "72860-451 ",
+      "cidade": "Novo gama",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T05:05:05.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 46,
+      "Timestamp": 45983.219253159725,
+      "bairro": "Santa Maria",
+      "cep": "72504-003 ",
+      "cidade": "BrasÍlia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T05:15:43.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 47,
+      "Timestamp": 45983.223860949074,
+      "bairro": "Parque Rio Branco",
+      "cep": "72870-402",
+      "cidade": "Valparaiso ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T05:22:21.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 48,
+      "Timestamp": 45983.23729019676,
+      "bairro": "Ceilândia",
+      "cep": "72.220-000",
+      "cidade": "Ceilândia",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T05:41:41.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 49,
+      "Timestamp": 45983.258009004625,
+      "bairro": "Ceilândia",
+      "cep": 72241101,
+      "cidade": "Ceilondres",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "twitter": "Eljorge_22",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T06:11:31.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 50,
+      "Timestamp": 45983.26112844907,
+      "bairro": "Sobradinho",
+      "cep": 73017016,
+      "cidade": "Sobradinho",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "EventoLocal",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T06:16:01.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "EventoLocal",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 51,
+      "Timestamp": 45983.282112939814,
+      "bairro": "Samambaia",
+      "cep": 72312105,
+      "cidade": "Samambaia ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T06:46:14.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 52,
+      "Timestamp": 45983.29542672454,
+      "bairro": "Areal",
+      "cep": "71973-540",
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T07:05:24.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 53,
+      "Timestamp": 45983.301925694446,
+      "bairro": "Ceilândia",
+      "cep": "72.220-000",
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T07:14:46.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 54,
+      "Timestamp": 45983.31665570602,
+      "bairro": "Candangolândia",
+      "cep": 71725207,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T07:35:59.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 55,
+      "Timestamp": 45983.33753822917,
+      "bairro": "Taguatinga",
+      "cep": 72120250,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "EventoLocal",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T08:06:03.000Z",
+      "area": "Outro",
+      "interesse": "ApoiarMovimento",
+      "origem": "EventoLocal",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 56,
+      "Timestamp": 45983.34057402778,
+      "bairro": "Sobraidnho 2",
+      "cep": 73090155,
+      "cidade": "Brasilia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "Não tenho ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T08:10:25.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 57,
+      "Timestamp": 45983.34899049769,
+      "bairro": "Ceilândia",
+      "cep": 72236800,
+      "cidade": "Ceilandia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T08:22:32.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 58,
+      "Timestamp": 45983.36463827547,
+      "bairro": "Parque Estrela Dalva IX",
+      "cep": 72853376,
+      "cidade": "Luziânia ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T08:45:04.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 59,
+      "Timestamp": 45983.376712916666,
+      "bairro": "Massões Odisseia",
+      "cep": 7292010,
+      "cidade": "águas lindas ",
+      "estado": "go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T09:02:28.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 60,
+      "Timestamp": 45983.39423103009,
+      "bairro": "Sol Nascente",
+      "cep": 72855812,
+      "cidade": "Luziânia",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T09:27:41.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 61,
+      "Timestamp": 45983.399581527774,
+      "bairro": "M Norte",
+      "cep": 72146010,
+      "cidade": "Distrito Federal ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "twitter": "menorceeOficial",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T09:35:23.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 62,
+      "Timestamp": 45983.46027575231,
+      "bairro": "Águas Claras",
+      "cep": "71936-750",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T11:02:47.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 63,
+      "Timestamp": 45983.46081755787,
+      "bairro": "Ceilândia",
+      "cep": 72236800,
+      "cidade": "Ceilandia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "Vinix",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T11:03:34.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 64,
+      "Timestamp": 45983.491767858795,
+      "bairro": "Paranoá",
+      "cep": 71587672,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T11:48:08.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 65,
+      "Timestamp": 45983.499615243054,
+      "bairro": "Tororo",
+      "cep": 71680601,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T11:59:26.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 66,
+      "Timestamp": 45983.52654877315,
+      "bairro": "Parque Marajó",
+      "cep": 72874246,
+      "cidade": "Valparaíso ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T12:38:13.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 67,
+      "Timestamp": 45983.53316577546,
+      "bairro": "FRIBURGO",
+      "cep": "72880-000",
+      "cidade": "Cidade Ocidental",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T12:47:45.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 68,
+      "Timestamp": 45983.538611724536,
+      "bairro": "Samambaia",
+      "cep": 72313713,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Estudante",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T12:55:36.000Z",
+      "area": "Estudante",
+      "interesse": "Outro",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 69,
+      "Timestamp": 45983.538925625,
+      "bairro": "Sobradinho",
+      "cep": 73016017,
+      "cidade": "Sobradinho df",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "twitter": "Não tenho ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T12:56:03.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 70,
+      "Timestamp": 45983.54292324074,
+      "bairro": "Parque Marajó",
+      "cep": 72874246,
+      "cidade": "Valparaíso ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T13:01:48.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 71,
+      "Timestamp": 45983.5533560301,
+      "bairro": "Estrutural",
+      "cep": 5103333112,
+      "cidade": "Estrutural ",
+      "estado": "DF",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T13:16:49.000Z",
+      "area": "Outro",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 72,
+      "Timestamp": 45983.55940815972,
+      "bairro": "Águas Lindas",
+      "cep": 7290870,
+      "cidade": "Águas Lindas",
+      "estado": "Go",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T13:25:32.000Z",
+      "area": "Outro",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 73,
+      "Timestamp": 45983.58111652778,
+      "bairro": "Sabino Leite",
+      "cep": 73825000,
+      "cidade": "Vila Boa",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T13:56:48.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 74,
+      "Timestamp": 45983.5821465162,
+      "bairro": "Paulo Vi",
+      "cep": 31998010,
+      "cidade": "Belo Horizonte ",
+      "estado": "MG",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "SaberMais",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T13:58:17.000Z",
+      "area": "Música",
+      "interesse": "SaberMais",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 75,
+      "Timestamp": 45983.58503440973,
+      "bairro": "Planaltina",
+      "cep": 73404806,
+      "cidade": "Planaltina ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:02:26.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 76,
+      "Timestamp": 45983.59244861111,
+      "bairro": "Vila Operária, Rua 5 Casa 3",
+      "cep": 70636330,
+      "cidade": "Brasília DF",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:13:07.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 77,
+      "Timestamp": 45983.60191298611,
+      "bairro": "Samambaia",
+      "cep": 72319119,
+      "cidade": "Samambaia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:26:45.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 78,
+      "Timestamp": 45983.60783940973,
+      "bairro": "Taguatinga",
+      "cep": 72140260,
+      "cidade": "Taguatinga ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:35:17.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 79,
+      "Timestamp": 45983.60995982639,
+      "bairro": "Estrela Dalva 3",
+      "cep": 72882336,
+      "cidade": "Cidade Ocidental",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:38:20.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 80,
+      "Timestamp": 45983.616269756945,
+      "bairro": "Parque Marajó",
+      "cep": 72874301,
+      "cidade": "Valparaíso",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:47:25.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 81,
+      "Timestamp": 45983.62454326389,
+      "bairro": "Ceilândia",
+      "cep": 72260894,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T14:59:20.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 82,
+      "Timestamp": 45983.65057783565,
+      "bairro": "Santa Maria",
+      "cep": 72509502,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T15:36:49.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 83,
+      "Timestamp": 45983.65201855324,
+      "bairro": "Gama",
+      "cep": "72460-330",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "twitter": "@poljemmc ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T15:38:54.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 84,
+      "Timestamp": 45983.67014637731,
+      "bairro": "Águas Claras",
+      "cep": "71936-750",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T16:05:00.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 85,
+      "Timestamp": 45983.71483201389,
+      "bairro": "Samambaia",
+      "cep": "72325-005",
+      "cidade": "BRASILIA",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "twitter": "Não tenho ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T17:09:21.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 86,
+      "Timestamp": 45983.72262393519,
+      "bairro": "Samambaia",
+      "cep": 72316227,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "@__theNandz",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T17:20:34.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 87,
+      "Timestamp": 45983.72963835648,
+      "bairro": "Centro",
+      "cep": "72880-714",
+      "cidade": "Cidade Ocidental",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T17:30:40.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 88,
+      "Timestamp": 45983.735550763886,
+      "bairro": "Santa Maria",
+      "cep": "72504-404",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T17:39:11.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 89,
+      "Timestamp": 45983.779983506945,
+      "bairro": "Qs20",
+      "cep": 71884702,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "twitter": ".....",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T18:43:10.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 90,
+      "Timestamp": 45983.78590092593,
+      "bairro": "Ceilândia",
+      "cep": 72225561,
+      "cidade": "Ceilândia ",
+      "estado": "Ma",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Outro",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T18:51:41.000Z",
+      "area": "Outro",
+      "interesse": "Outro",
+      "origem": "Outro",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 91,
+      "Timestamp": 45983.79541584491,
+      "bairro": "Ceilândia",
+      "cep": "71255-715 ",
+      "cidade": "Estrutural ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T19:05:23.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 92,
+      "Timestamp": 45983.82571950232,
+      "bairro": "Parque Napolis A",
+      "cep": "72885-083",
+      "cidade": "Ocidental ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T19:49:02.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 93,
+      "Timestamp": 45983.82722104166,
+      "bairro": "Samambaia",
+      "cep": 72329011,
+      "cidade": "Brasília",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T19:51:11.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 94,
+      "Timestamp": 45983.8424083912,
+      "bairro": "Planaltina",
+      "cep": 73555550,
+      "cidade": "Planaltina ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T20:13:04.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 95,
+      "Timestamp": 45983.85024216435,
+      "bairro": "Samambaia",
+      "cep": 72320999,
+      "cidade": "Samambaia ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T20:24:20.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 96,
+      "Timestamp": 45983.851611226855,
+      "bairro": "Ceilândia",
+      "cep": "72215-079",
+      "cidade": "Brasília ",
+      "estado": "df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T20:26:19.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 97,
+      "Timestamp": 45983.85588516203,
+      "bairro": "Buritizinho",
+      "cep": 73061235,
+      "cidade": "Sobradinho 2",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T20:32:28.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 98,
+      "Timestamp": 45983.861064895835,
+      "bairro": "Ceilândia",
+      "cep": 72220094,
+      "cidade": "Brasília ",
+      "estado": "df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T20:39:56.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 99,
+      "Timestamp": 45983.86386868056,
+      "bairro": "Jardim Ingá",
+      "cep": 72853300,
+      "cidade": "Luziânia ",
+      "estado": "Go",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T20:43:58.000Z",
+      "area": "Audiovisual",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 100,
+      "Timestamp": 45983.88057247685,
+      "bairro": "Parque Rio Branco",
+      "cep": 72872811,
+      "cidade": "Valparaíso ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T21:08:01.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 101,
+      "Timestamp": 45983.906779756944,
+      "bairro": "Ceilândia",
+      "cep": 72270710,
+      "cidade": "Ceilândia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T21:45:45.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 102,
+      "Timestamp": 45983.945575543985,
+      "bairro": "Ceilândia",
+      "cep": 72260894,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T22:41:37.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 103,
+      "Timestamp": 45983.94838391204,
+      "bairro": "Marajó",
+      "cep": 73858000,
+      "cidade": "Cristina ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T22:45:40.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 104,
+      "Timestamp": 45983.96572043981,
+      "bairro": "Riacho Fundo",
+      "cep": "71.828-000",
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T23:10:38.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 105,
+      "Timestamp": 45983.98847009259,
+      "bairro": "Itapoã",
+      "cep": 71596192,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-22T23:43:23.000Z",
+      "area": "Outro",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 106,
+      "Timestamp": 45984.07916407408,
+      "bairro": "Samambaia",
+      "cep": 72302547,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Comunidade",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T01:53:59.000Z",
+      "area": "Comunidade",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "22/11/2025"
+    },
+    {
+      "Quantidade": 107,
+      "Timestamp": 45984.12976646991,
+      "bairro": "Areal",
+      "cep": 71980360,
+      "cidade": "Aguas Claras",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T03:06:51.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 108,
+      "Timestamp": 45984.15815524306,
+      "bairro": "Ceilândia",
+      "cep": 72215034,
+      "cidade": "Ceilândia ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T03:47:44.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 109,
+      "Timestamp": 45984.285917280096,
+      "bairro": "Paranoá",
+      "cep": 71571306,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T06:51:43.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 110,
+      "Timestamp": 45984.34341579861,
+      "bairro": "Samambaia",
+      "cep": 72331150,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T08:14:31.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 111,
+      "Timestamp": 45984.419441157406,
+      "bairro": "Parque Napolis",
+      "cep": 72885026,
+      "cidade": "Ocidental ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T10:03:59.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 112,
+      "Timestamp": 45984.42429300926,
+      "bairro": "12 Hc",
+      "cep": 72860108,
+      "cidade": "Novo gama ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T10:10:58.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 113,
+      "Timestamp": 45984.55090199074,
+      "bairro": "M Norte",
+      "cep": 72145808,
+      "cidade": "Taguatinga ",
+      "estado": "BRASÍLIA",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "twitter": "Douglas",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T13:13:17.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 114,
+      "Timestamp": 45984.572850717595,
+      "bairro": "Ceilândia",
+      "cep": 72225255,
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T13:44:54.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 115,
+      "Timestamp": 45984.57419939815,
+      "bairro": "Dom Francisco",
+      "cep": "72.669-075 ",
+      "cidade": "Água Quente ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T13:46:50.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 116,
+      "Timestamp": 45984.61310696759,
+      "bairro": "Residencial Gramado",
+      "cep": 38401590,
+      "cidade": "Uberlândia ",
+      "estado": "Mg",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T14:42:52.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 117,
+      "Timestamp": 45984.61565613426,
+      "bairro": "Portal Da Barragem",
+      "cep": 72911583,
+      "cidade": "Águas lindas ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T14:46:32.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 118,
+      "Timestamp": 45984.626554745366,
+      "bairro": "Residencial Boa Vista",
+      "cep": 72911662,
+      "cidade": "Águas lindas ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "twitter": "Não tenho ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T15:02:14.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 119,
+      "Timestamp": 45984.62941162037,
+      "bairro": "Beatriz 1",
+      "cep": 72902274,
+      "cidade": "Santo Antônio do descoberto ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T15:06:21.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 120,
+      "Timestamp": 45984.653242858796,
+      "bairro": "Ceilândia",
+      "cep": 72215170,
+      "cidade": "Ceilândia ",
+      "estado": "df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T15:40:40.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 121,
+      "Timestamp": 45984.71694327546,
+      "bairro": "Ceilândia",
+      "cep": 72225213,
+      "cidade": "Ceilandia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T17:12:23.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 122,
+      "Timestamp": 45984.76133505787,
+      "bairro": "Samambaia",
+      "cep": "72301-403",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T18:16:19.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 123,
+      "Timestamp": 45984.77653762732,
+      "bairro": "Zona Rural",
+      "cep": "85660-000",
+      "cidade": "Dóis Vizinhos ",
+      "estado": "PR",
+      "area_de_atuacao": "Estudante",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T18:38:12.000Z",
+      "area": "Estudante",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 124,
+      "Timestamp": 45984.853722280095,
+      "bairro": "Ceilândia",
+      "cep": 72280336,
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T20:29:21.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 125,
+      "Timestamp": 45984.86606107639,
+      "bairro": "Ypiranga",
+      "cep": "72874-505",
+      "cidade": "Valparaiso ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Midia",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T20:47:07.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Midia",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 126,
+      "Timestamp": 45984.99950578704,
+      "bairro": "Catulina",
+      "cep": 38500000,
+      "cidade": "Monte Carmelo",
+      "estado": "Mg",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-23T23:59:17.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "23/11/2025"
+    },
+    {
+      "Quantidade": 127,
+      "Timestamp": 45985.38386295139,
+      "bairro": "Ceilândia",
+      "cep": 72260704,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T09:12:45.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 128,
+      "Timestamp": 45985.41539422453,
+      "bairro": "Planaltina",
+      "cep": 73741140,
+      "cidade": "Planaltina ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T09:58:10.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 129,
+      "Timestamp": 45985.4184315625,
+      "bairro": "Planaltina",
+      "cep": 73401660,
+      "cidade": "Planaltina-DF",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T10:02:32.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 130,
+      "Timestamp": 45985.44322469908,
+      "bairro": "Cidade Jardim",
+      "cep": 72911066,
+      "cidade": "Águas lindas de Goiás ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "Petrea fately",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T10:38:14.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 131,
+      "Timestamp": 45985.44527505787,
+      "bairro": "Vila São José",
+      "cep": 72755309,
+      "cidade": "Brazlândia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T10:41:11.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 132,
+      "Timestamp": 45985.54091956018,
+      "bairro": "Ceilândia",
+      "cep": 72210102,
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T12:58:55.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 133,
+      "Timestamp": 45985.557415243056,
+      "bairro": "Recanto das Emas",
+      "cep": 72630408,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T13:22:40.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 134,
+      "Timestamp": 45985.56055675926,
+      "bairro": "Sobradinho",
+      "cep": 73092010,
+      "cidade": "Sobradinho ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T13:27:12.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 135,
+      "Timestamp": 45985.563915439816,
+      "bairro": "Santa Maria",
+      "cep": 72506407,
+      "cidade": "Santa Maria DF",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Midia",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T13:32:02.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Midia",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 136,
+      "Timestamp": 45985.57582435185,
+      "bairro": "Gama",
+      "cep": 72410503,
+      "cidade": "Gama ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T13:49:11.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Indicacao",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 137,
+      "Timestamp": 45985.58063111111,
+      "bairro": "Boa Vista 1",
+      "cep": 72862142,
+      "cidade": "Novo gama ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T13:56:06.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Indicacao",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 138,
+      "Timestamp": 45985.61023359954,
+      "bairro": "Santa Maria",
+      "cep": 72592107,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T14:38:44.000Z",
+      "area": "Audiovisual",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 139,
+      "Timestamp": 45985.70005275463,
+      "bairro": "Sobradinho",
+      "cep": 73105250,
+      "cidade": "Grande Colorado ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Outro",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T16:48:04.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Outro",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 140,
+      "Timestamp": 45985.85050716435,
+      "bairro": "Santa Maria",
+      "cep": 72408411,
+      "cidade": "Santa Maria Df",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T20:24:43.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 141,
+      "Timestamp": 45985.919310717596,
+      "bairro": "Jardim California",
+      "cep": "73807-740",
+      "cidade": "Formosa",
+      "estado": "GO",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T22:03:48.000Z",
+      "area": "Outro",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 142,
+      "Timestamp": 45985.946191828705,
+      "bairro": "Recanto das Emas",
+      "cep": 72660339,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-24T22:42:30.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 143,
+      "Timestamp": 45986.00594700231,
+      "bairro": "Recanto das Emas",
+      "cep": 7260451,
+      "cidade": "Recanto Das Emas",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T00:08:33.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 144,
+      "Timestamp": 45986.07402407407,
+      "bairro": "Arapoangas",
+      "cep": 73368564,
+      "cidade": "Planaltina ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T01:46:35.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 145,
+      "Timestamp": 45986.11980914352,
+      "bairro": "Núcleo Bandeirante",
+      "cep": 71705013,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T02:52:31.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "24/11/2025"
+    },
+    {
+      "Quantidade": 146,
+      "Timestamp": 45986.30680013889,
+      "bairro": "Pedregal",
+      "cep": 72860408,
+      "cidade": "Novo gama ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "EventoLocal",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T07:21:47.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "EventoLocal",
+      "date_formatted": "25/11/2025"
+    },
+    {
+      "Quantidade": 147,
+      "Timestamp": 45986.30870902778,
+      "bairro": "Expansão Do Setor\"O\"",
+      "cep": 72255209,
+      "cidade": "Brasilia",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "Ainda não ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T07:24:32.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "25/11/2025"
+    },
+    {
+      "Quantidade": 148,
+      "Timestamp": 45986.54861159722,
+      "bairro": "Planaltina",
+      "cep": 73751120,
+      "cidade": "Planaltina",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T13:10:00.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "25/11/2025"
+    },
+    {
+      "Quantidade": 149,
+      "Timestamp": 45986.781558310184,
+      "bairro": "Recanto das Emas",
+      "cep": 72610311,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "@Vilazin_",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T18:45:26.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "25/11/2025"
+    },
+    {
+      "Quantidade": 150,
+      "Timestamp": 45986.794410925926,
+      "bairro": "Samambaia",
+      "cep": 72308703,
+      "cidade": "Brasilia ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T19:03:57.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "25/11/2025"
+    },
+    {
+      "Quantidade": 151,
+      "Timestamp": 45986.810212303244,
+      "bairro": "Águas Lindas",
+      "cep": 0,
+      "cidade": "Águas Lindas ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-25T19:26:42.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "25/11/2025"
+    },
+    {
+      "Quantidade": 152,
+      "Timestamp": 45987.384994120366,
+      "bairro": "Taguatinga",
+      "cep": "72210-040",
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-26T09:14:23.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "26/11/2025"
+    },
+    {
+      "Quantidade": 153,
+      "Timestamp": 45987.52108493056,
+      "bairro": "Vila Esperança",
+      "cep": 72902138,
+      "cidade": "Santo Antônio do descoberto ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-26T12:30:21.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "26/11/2025"
+    },
+    {
+      "Quantidade": 154,
+      "Timestamp": 45987.617690694446,
+      "bairro": "Taguatinga",
+      "cep": 72145760,
+      "cidade": "Brasília",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-26T14:49:28.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Indicacao",
+      "date_formatted": "26/11/2025"
+    },
+    {
+      "Quantidade": 155,
+      "Timestamp": 45988.38067140046,
+      "bairro": "Paracatuzinho",
+      "cep": "38603 478",
+      "cidade": "Paracatu ",
+      "estado": "Mg",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T09:08:10.000Z",
+      "area": "Outro",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 156,
+      "Timestamp": 45988.40411717593,
+      "bairro": "Santa Maria",
+      "cep": "72501-507",
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T09:41:55.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 157,
+      "Timestamp": 45988.446545081024,
+      "bairro": "Buritizinho",
+      "cep": 73062290,
+      "cidade": "Brasilia",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "EventoLocal",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T10:43:01.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "EventoLocal",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 158,
+      "Timestamp": 45988.73784393519,
+      "bairro": "Sobradinho",
+      "cep": 73020114,
+      "cidade": "sobradinho",
+      "estado": "DF",
+      "area_de_atuacao": "Estudante",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T17:42:29.000Z",
+      "area": "Estudante",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 159,
+      "Timestamp": 45988.740675243054,
+      "bairro": "Sobradinho",
+      "cep": 73020014,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Podcast",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T17:46:34.000Z",
+      "area": "Podcast",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 160,
+      "Timestamp": 45988.741105127316,
+      "bairro": "Sobradinho",
+      "cep": 73020014,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Podcast",
+      "interesse_no_studio": "SaberMais",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T17:47:11.000Z",
+      "area": "Podcast",
+      "interesse": "SaberMais",
+      "origem": "Indicacao",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 161,
+      "Timestamp": 45988.84629144676,
+      "bairro": "Vila Nova",
+      "cep": 47960000,
+      "cidade": "Angical ",
+      "estado": "Ba",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T20:18:39.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 162,
+      "Timestamp": 45988.86213810185,
+      "bairro": "Ceilândia",
+      "cep": 72220049,
+      "cidade": "Df",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T20:41:28.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 163,
+      "Timestamp": 45988.881733368056,
+      "bairro": "Residencial Gramado",
+      "cep": 38401590,
+      "cidade": "Uberlândia ",
+      "estado": "Mg",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-27T21:09:41.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "27/11/2025"
+    },
+    {
+      "Quantidade": 164,
+      "Timestamp": 45990.45626960648,
+      "bairro": "Camping Club",
+      "cep": 72914018,
+      "cidade": "Aguas Lindas ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Midia",
+      "twitter": "Lucas yaxu",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-29T10:57:01.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Midia",
+      "date_formatted": "29/11/2025"
+    },
+    {
+      "Quantidade": 165,
+      "Timestamp": 45991.72547387732,
+      "bairro": "Taguatinga",
+      "cep": 72125110,
+      "cidade": "Brasilia",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-30T17:24:40.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Indicacao",
+      "date_formatted": "30/11/2025"
+    },
+    {
+      "Quantidade": 166,
+      "Timestamp": 45991.73525215278,
+      "bairro": "Setor Sul",
+      "cep": 73802451,
+      "cidade": "Formosa",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-11-30T17:38:45.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "30/11/2025"
+    },
+    {
+      "Quantidade": 167,
+      "Timestamp": 45992.742555324076,
+      "bairro": "Arapoanga",
+      "cep": 73368544,
+      "cidade": "Planaltina",
+      "estado": "Df",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-01T17:49:16.000Z",
+      "area": "Outro",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "01/12/2025"
+    },
+    {
+      "Quantidade": 168,
+      "Timestamp": 45992.863174143524,
+      "bairro": "Rua 5",
+      "cep": 7230521,
+      "cidade": "Samambaia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Outro",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-01T20:42:58.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Outro",
+      "date_formatted": "01/12/2025"
+    },
+    {
+      "Quantidade": 169,
+      "Timestamp": 45993.488866875,
+      "bairro": "Paranoá",
+      "cep": 71572705,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-02T11:43:58.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "02/12/2025"
+    },
+    {
+      "Quantidade": 170,
+      "Timestamp": 45993.84137292824,
+      "bairro": "Buritis 04",
+      "cep": 73358220,
+      "cidade": "Planaltina ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-02T20:11:34.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "02/12/2025"
+    },
+    {
+      "Quantidade": 171,
+      "Timestamp": 45993.84262791667,
+      "bairro": "Jardim Abc",
+      "cep": 72886484,
+      "cidade": "Cidade ocidental ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "Circuito Ativo Rap ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-02T20:13:23.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "02/12/2025"
+    },
+    {
+      "Quantidade": 172,
+      "Timestamp": 45994.367804525464,
+      "bairro": "Centro",
+      "cep": 71691089,
+      "cidade": "São Sebastião ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-03T08:49:38.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "03/12/2025"
+    },
+    {
+      "Quantidade": 173,
+      "Timestamp": 45994.42803304398,
+      "bairro": "Guará",
+      "cep": 71050020,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-03T10:16:22.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "03/12/2025"
+    },
+    {
+      "Quantidade": 174,
+      "Timestamp": 45994.55153795139,
+      "bairro": "Vila Buritis",
+      "cep": 73350301,
+      "cidade": "Planaltina ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-03T13:14:12.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Indicacao",
+      "date_formatted": "03/12/2025"
+    },
+    {
+      "Quantidade": 175,
+      "Timestamp": 45995.54930747685,
+      "bairro": "Recreio Da Barragem",
+      "cep": 7290870,
+      "cidade": "Aguas lindas ",
+      "estado": "Go",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-04T13:11:00.000Z",
+      "area": "Outro",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "04/12/2025"
+    },
+    {
+      "Quantidade": 176,
+      "Timestamp": 45995.83353440972,
+      "bairro": "Mansões Odisseia",
+      "cep": 72927110,
+      "cidade": "Águas lindas ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-04T20:00:17.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "04/12/2025"
+    },
+    {
+      "Quantidade": 177,
+      "Timestamp": 45995.93395511574,
+      "bairro": "Ceilândia",
+      "cep": 72255107,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Estudante",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Midia",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-04T22:24:53.000Z",
+      "area": "Estudante",
+      "interesse": "UsarEquipamentos",
+      "origem": "Midia",
+      "date_formatted": "04/12/2025"
+    },
+    {
+      "Quantidade": 178,
+      "Timestamp": 45996.32357400463,
+      "bairro": "Ceilândia",
+      "cep": "72215-011",
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-05T07:45:56.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "05/12/2025"
+    },
+    {
+      "Quantidade": 179,
+      "Timestamp": 45996.44927332176,
+      "bairro": "Criastal",
+      "cep": 73850000,
+      "cidade": "Cristalina",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-05T10:46:57.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "05/12/2025"
+    },
+    {
+      "Quantidade": 180,
+      "Timestamp": 45996.480355162035,
+      "bairro": "Candangolândia",
+      "cep": 71725404,
+      "cidade": "Brasília ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Midia",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-05T11:31:42.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Midia",
+      "date_formatted": "05/12/2025"
+    },
+    {
+      "Quantidade": 181,
+      "Timestamp": 45996.57922422454,
+      "bairro": "Jardim Ingá",
+      "cep": 72850170,
+      "cidade": "Luziânia",
+      "estado": "GO",
+      "area_de_atuacao": "Podcast",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-05T13:54:04.000Z",
+      "area": "Podcast",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "05/12/2025"
+    },
+    {
+      "Quantidade": 182,
+      "Timestamp": 46001.23491005787,
+      "bairro": "Samambaia",
+      "cep": 72323105,
+      "cidade": "Smb norte ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Outro",
+      "twitter": "Não tenho ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-10T05:38:16.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Outro",
+      "date_formatted": "10/12/2025"
+    },
+    {
+      "Quantidade": 183,
+      "Timestamp": 46001.578829652775,
+      "bairro": "Jardim Ingá",
+      "cep": 72850360,
+      "cidade": "Luziania ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-10T13:53:30.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "10/12/2025"
+    },
+    {
+      "Quantidade": 184,
+      "Timestamp": 46002.97823900463,
+      "bairro": "Sobradinho",
+      "cep": 73105904,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-11T23:28:39.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "11/12/2025"
+    },
+    {
+      "Quantidade": 185,
+      "Timestamp": 46003.000048263886,
+      "bairro": "Asa Norte",
+      "cep": "70866170O",
+      "cidade": "Brasilia ",
+      "estado": "Sd",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-12T00:00:04.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "11/12/2025"
+    },
+    {
+      "Quantidade": 186,
+      "Timestamp": 46003.44230475694,
+      "bairro": "Gama",
+      "cep": 72860203,
+      "cidade": "NOVO GAMA ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Outro",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-12T10:36:55.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Outro",
+      "date_formatted": "12/12/2025"
+    },
+    {
+      "Quantidade": 187,
+      "Timestamp": 46005.96841935185,
+      "bairro": "Samambaia",
+      "cep": 72319005,
+      "cidade": "Brasília",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "twitter": "jovemwaccy",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-14T23:14:31.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "14/12/2025"
+    },
+    {
+      "Quantidade": 188,
+      "Timestamp": 46008.32956405093,
+      "bairro": "Guará",
+      "cep": 71070147,
+      "cidade": "Brasilia ",
+      "estado": "DF",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T07:54:34.000Z",
+      "area": "Audiovisual",
+      "interesse": "ParticiparCursos",
+      "origem": "Indicacao",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 189,
+      "Timestamp": 46008.48499712963,
+      "bairro": "Oeste",
+      "cep": 72425020,
+      "cidade": "Gama ",
+      "estado": "DF",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T11:38:23.000Z",
+      "area": "Audiovisual",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 190,
+      "Timestamp": 46008.50703497685,
+      "bairro": "Total Ville",
+      "cep": 72583300,
+      "cidade": "Santa Maria ",
+      "estado": "Df",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T12:10:07.000Z",
+      "area": "Audiovisual",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 191,
+      "Timestamp": 46008.578269143516,
+      "bairro": "Jr Roriz",
+      "cep": 73340000,
+      "cidade": "Planaltina ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T13:52:42.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 192,
+      "Timestamp": 46008.62149751157,
+      "bairro": "Valparaíso",
+      "cep": 72871503,
+      "cidade": "Valparaíso ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T14:54:57.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 193,
+      "Timestamp": 46008.640105046296,
+      "bairro": "Norte",
+      "cep": 737511060,
+      "cidade": "Planaltina ",
+      "estado": "ás",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "twitter": "MC Gabriel bsl ofc ",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T15:21:45.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 194,
+      "Timestamp": 46008.645997824075,
+      "bairro": "Ceilândia",
+      "cep": 72255310,
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T15:30:14.000Z",
+      "area": "Outro",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 195,
+      "Timestamp": 46008.70731892361,
+      "bairro": "Arapoangas",
+      "cep": 73369112,
+      "cidade": "planaltina",
+      "estado": "df",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "n uso",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T16:58:32.000Z",
+      "area": "Outro",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 196,
+      "Timestamp": 46008.84593060185,
+      "bairro": "Gama",
+      "cep": 72465400,
+      "cidade": "Gama",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T20:18:08.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 197,
+      "Timestamp": 46008.863188449075,
+      "bairro": "Recanto das Emas",
+      "cep": 72601409,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-17T20:42:59.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "17/12/2025"
+    },
+    {
+      "Quantidade": 198,
+      "Timestamp": 46009.84308679398,
+      "bairro": "Sobradinho",
+      "cep": 72270900,
+      "cidade": "Sobradinho",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-18T20:14:02.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "18/12/2025"
+    },
+    {
+      "Quantidade": 199,
+      "Timestamp": 46010.00490486111,
+      "bairro": "Arniqueiras",
+      "cep": "71990-000",
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "@mcnegaomr",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-19T00:07:03.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "18/12/2025"
+    },
+    {
+      "Quantidade": 200,
+      "Timestamp": 46011.35937689815,
+      "bairro": "Jardim Oriente",
+      "cep": " 72 870283",
+      "cidade": "vakparaiso de goias ",
+      "estado": "go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "sularap",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-20T08:37:30.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "20/12/2025"
+    },
+    {
+      "Quantidade": 201,
+      "Timestamp": 46018.06502432871,
+      "bairro": "Vicente Pires",
+      "cep": 72006209,
+      "cidade": "Taguatinga ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2025-12-27T01:33:38.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "26/12/2025"
+    },
+    {
+      "Quantidade": 202,
+      "Timestamp": 46030.92198358796,
+      "bairro": "Jardim Abc",
+      "cep": 72899000,
+      "cidade": "Ocidental ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-08T22:07:39.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "08/01/2026"
+    },
+    {
+      "Quantidade": 203,
+      "Timestamp": 46030.92386556713,
+      "bairro": "Jardim ABC",
+      "cep": 72899000,
+      "cidade": "Ocidental ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-08T22:10:21.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "08/01/2026"
+    },
+    {
+      "Quantidade": 204,
+      "Timestamp": 46033.00219408565,
+      "bairro": "Riacho Fundo",
+      "cep": 71820607,
+      "cidade": "Brasília ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-11T00:03:09.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Instagram",
+      "date_formatted": "10/01/2026"
+    },
+    {
+      "Quantidade": 205,
+      "Timestamp": 46034.39165481481,
+      "bairro": "Leste",
+      "cep": 71261055,
+      "cidade": "BrasÍlia",
+      "estado": "Df",
+      "area_de_atuacao": "Outro",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-12T09:23:58.000Z",
+      "area": "Outro",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "12/01/2026"
+    },
+    {
+      "Quantidade": 206,
+      "Timestamp": 46041.36813358797,
+      "bairro": "Parque Estrela Dalva 4",
+      "cep": 72821630,
+      "cidade": "Luziânia ",
+      "estado": "GO",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-19T08:50:06.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "19/01/2026"
+    },
+    {
+      "Quantidade": 207,
+      "Timestamp": 46041.64569444444,
+      "bairro": "P’sul",
+      "cep": "Q o 36",
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-19T15:29:48.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "19/01/2026"
+    },
+    {
+      "Quantidade": 208,
+      "Timestamp": 46044.504557569446,
+      "bairro": "Qng",
+      "cep": 72130250,
+      "cidade": "Taguatinga norte ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "EventoLocal",
+      "twitter": "https://x.com/richaodorap",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-22T12:06:33.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "EventoLocal",
+      "date_formatted": "22/01/2026"
+    },
+    {
+      "Quantidade": 209,
+      "Timestamp": 46045.96188530093,
+      "bairro": "Praia De Carapebus",
+      "cep": 29164454,
+      "cidade": "Serra",
+      "estado": "ES",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "twitter": "Não tenho",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-23T23:05:06.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "23/01/2026"
+    },
+    {
+      "Quantidade": 210,
+      "Timestamp": 46046.48695668981,
+      "bairro": "Setor Habitacional Do Setor Imperatriz",
+      "cep": 73805405,
+      "cidade": "Formosa ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-24T11:41:13.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "24/01/2026"
+    },
+    {
+      "Quantidade": 211,
+      "Timestamp": 46046.89764671296,
+      "bairro": "Taguatinga",
+      "cep": 72135903,
+      "cidade": "Brasília ",
+      "estado": "Df",
+      "area_de_atuacao": "Comunidade",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-24T21:32:36.000Z",
+      "area": "Comunidade",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "24/01/2026"
+    },
+    {
+      "Quantidade": 212,
+      "Timestamp": 46046.90170766204,
+      "bairro": "Taguatinga",
+      "cep": 72125250,
+      "cidade": "Taguatinga ",
+      "estado": "DF",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-24T21:38:27.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "24/01/2026"
+    },
+    {
+      "Quantidade": 213,
+      "Timestamp": 46047.31600569445,
+      "bairro": "Sol Nascente",
+      "cep": 72855812,
+      "cidade": "Luziânia ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-25T07:35:02.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "25/01/2026"
+    },
+    {
+      "Quantidade": 214,
+      "Timestamp": 46047.45554995371,
+      "bairro": "Ipanema",
+      "cep": 72872033,
+      "cidade": "Valparaiso ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-25T10:55:59.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "25/01/2026"
+    },
+    {
+      "Quantidade": 215,
+      "Timestamp": 46047.4873297338,
+      "bairro": "Residencial Mangueiras",
+      "cep": 72900030,
+      "cidade": "Santo Antônio do descoberto ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ParticiparCursos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-25T11:41:45.000Z",
+      "area": "Música",
+      "interesse": "ParticiparCursos",
+      "origem": "Instagram",
+      "date_formatted": "25/01/2026"
+    },
+    {
+      "Quantidade": 216,
+      "Timestamp": 46047.69785506945,
+      "bairro": "Norte",
+      "cep": 72331002,
+      "cidade": "Samambaia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-25T16:44:54.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "25/01/2026"
+    },
+    {
+      "Quantidade": 217,
+      "Timestamp": 46051.607587210645,
+      "bairro": "Ceilândia",
+      "cep": "71255-630",
+      "cidade": "Estrutural ",
+      "estado": "Df",
+      "area_de_atuacao": "Audiovisual",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-29T14:34:55.000Z",
+      "area": "Audiovisual",
+      "interesse": "UsarEquipamentos",
+      "origem": "Indicacao",
+      "date_formatted": "29/01/2026"
+    },
+    {
+      "Quantidade": 218,
+      "Timestamp": 46053.37837358796,
+      "bairro": "Sol Nascente",
+      "cep": 72246506,
+      "cidade": "Ceilândia ",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-01-31T09:04:51.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Instagram",
+      "date_formatted": "31/01/2026"
+    },
+    {
+      "Quantidade": 219,
+      "Timestamp": 46058.010219062504,
+      "bairro": "Lagoa Dos Santo ( Los Santos)",
+      "cep": 73800000,
+      "cidade": "Formosa ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "UsarEquipamentos",
+      "como_conheceu": "Outro",
+      "twitter": ".",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-02-05T00:14:42.000Z",
+      "area": "Música",
+      "interesse": "UsarEquipamentos",
+      "origem": "Outro",
+      "date_formatted": "04/02/2026"
+    },
+    {
+      "Quantidade": 220,
+      "Timestamp": 46058.99759436343,
+      "bairro": "Jardim Das Oliveiras",
+      "cep": 73805277,
+      "cidade": "Formosa ",
+      "estado": "Go",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "ApoiarMovimento",
+      "como_conheceu": "Indicacao",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-02-05T23:56:32.000Z",
+      "area": "Música",
+      "interesse": "ApoiarMovimento",
+      "origem": "Indicacao",
+      "date_formatted": "05/02/2026"
+    },
+    {
+      "Quantidade": 221,
+      "Timestamp": 46062.6009084375,
+      "bairro": "Arapoangas",
+      "cep": 73365812,
+      "cidade": "Arapoanga",
+      "estado": "Df",
+      "area_de_atuacao": "Musica",
+      "interesse_no_studio": "Outro",
+      "como_conheceu": "Instagram",
+      "lgpd_consent": "Eu concordo",
+      "data": "2026-02-09T14:25:18.000Z",
+      "area": "Música",
+      "interesse": "Outro",
+      "origem": "Instagram",
+      "date_formatted": "09/02/2026"
+    }
+  ]
+};
+
+    let chartInstances = {};
+
+    // Fetch Data / Init
+    
+        // Init Dashboard with Embedded Data
+        function initDashboard() {
+            try {
+                const json = embeddedData;
+                
+                // Set metadata
+                if (json.meta && json.meta.generatedAt) {
+                   const dateStr = new Date(json.meta.generatedAt).toLocaleDateString('pt-BR');
+                   const el = document.getElementById('last-update');
+                   if(el) el.textContent = 'Atualizado em: ' + dateStr;
+                }
+                
+                // Store raw data
+                rawData = json.records || []; 
+                
+                // Animate Entry
+                const loader = document.getElementById('loading-screen');
+                if(loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 500);
+                }
+
+                // Initial Render
+                populateFilters(rawData);
+                updateDashboard(rawData);
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Populate Filter Dropdowns
+    function populateFilters(data) {
+      const bairros = [...new Set(data.filter(d => d.bairro).map(d => d.bairro))].sort();
+      const areas = [...new Set(data.filter(d => d.area).map(d => d.area))].sort();
+
+      const bSelect = document.getElementById('filter-bairro');
+      const aSelect = document.getElementById('filter-area');
+
+      // Reset
+      while (bSelect.options.length > 1) bSelect.remove(1);
+      while (aSelect.options.length > 1) aSelect.remove(1);
+
+      bairros.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b; opt.textContent = b;
+        bSelect.appendChild(opt);
+      });
+      areas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a; opt.textContent = a;
+        aSelect.appendChild(opt);
+      });
+
+      bSelect.addEventListener('change', filterData);
+      aSelect.addEventListener('change', filterData);
+    }
+
+    function filterData() {
+      const bVal = document.getElementById('filter-bairro').value;
+      const aVal = document.getElementById('filter-area').value;
+      let filtered = rawData;
+      if (bVal !== 'all') filtered = filtered.filter(d => d.bairro === bVal);
+      if (aVal !== 'all') filtered = filtered.filter(d => d.area === aVal);
+      updateDashboard(filtered);
+    }
+
+    window.resetFilters = function () {
+      document.getElementById('filter-bairro').value = 'all';
+      document.getElementById('filter-area').value = 'all';
+      updateDashboard(rawData);
+    }
+
+    function updateDashboard(data) {
+      updateKPIs(data);
+      renderTimeline(data);
+      renderAreas(data);
+      renderBairros(data);
+      renderInterests(data);
+      renderOrigem(data);
+    }
+
+    function updateKPIs(data) {
+      document.getElementById('kpi-total').innerText = data.length;
+      if (data.length === 0) return;
+      document.getElementById('kpi-top-area').innerText = getTop(groupBy(data, 'area'));
+      document.getElementById('kpi-top-bairro').innerText = getTop(groupBy(data, 'bairro'));
+      document.getElementById('kpi-top-interest').innerText = getTop(groupBy(data, 'interesse'));
+    }
+
+    // Helpers
+    function groupBy(data, key) {
+      return data.reduce((acc, curr) => {
+        const val = curr[key] || 'Outro';
+        acc[val] = (acc[val] || 0) + 1;
+        return acc;
+      }, {});
+    }
+    function getTop(obj) {
+      const sorted = Object.entries(obj).sort((a, b) => b[1] - a[1]);
+      return sorted.length > 0 ? sorted[0][0] : '-';
+    }
+
+    // Charts Factory
+    function createChart(id, type, data, options = {}) {
+      const ctx = document.getElementById(id).getContext('2d');
+      if (chartInstances[id]) chartInstances[id].destroy();
+
+      // Common Options
+      const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#9ca3af' } },
+          datalabels: { display: false } // Default disabled
+        },
+        scales: {
+          // Conditionally added below
+        }
+      };
+
+      // Merge
+      const chartOptions = { ...commonOptions, ...options };
+      if (options.plugins) {
+        chartOptions.plugins = { ...commonOptions.plugins, ...options.plugins };
+      }
+      if (options.scales) {
+        chartOptions.scales = options.scales; // Override scales if provided
+      } else if (type === 'pie' || type === 'doughnut') {
+        delete chartOptions.scales; // No scales for pie
+      } else {
+        chartOptions.scales = {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }
+        }
+      }
+
+      chartInstances[id] = new Chart(ctx, {
+        type: type,
+        data: data,
+        options: chartOptions
+      });
+    }
+
+    // 1. Timeline (Cumulative - Time Scale)
+    function renderTimeline(data) {
+      const dateCounts = {};
+
+      // Collect
+      data.forEach(d => {
+        if (!d.data) return;
+        const dt = new Date(d.data);
+        // Standardize to YYYY-MM-DD
+        const dateKey = dt.toISOString().split('T')[0];
+        dateCounts[dateKey] = (dateCounts[dateKey] || 0) + 1;
+      });
+
+      let sortedDates = Object.keys(dateCounts).sort();
+
+      // Add Today
+      const todayKey = new Date().toISOString().split('T')[0];
+      if (!dateCounts[todayKey]) {
+        dateCounts[todayKey] = 0;
+        if (sortedDates.indexOf(todayKey) === -1) {
+          // Check if today is indeed after the last date
+          if (sortedDates.length === 0 || todayKey > sortedDates[sortedDates.length - 1]) {
+            sortedDates.push(todayKey);
+          }
+        }
+        sortedDates.sort(); // Re-sort
+      }
+
+      // Cumulative
+      let cumulative = 0;
+      const dataPoints = sortedDates.map(date => {
+        cumulative += dateCounts[date];
+        return { x: date, y: cumulative }; // Use object for time scale
+      });
+
+      createChart('chart-timeline', 'line', {
+        datasets: [{
+          label: 'Membros Acumulados',
+          data: dataPoints,
+          borderColor: '#e9ac15',
+          backgroundColor: 'rgba(233, 172, 21, 0.1)',
+          borderWidth: 2,
+          fill: 'origin',
+          tension: 0.3,
+          pointRadius: 3
+        }]
+      }, {
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'month',
+              displayFormats: { month: 'MMM yyyy' },
+              tooltipFormat: 'dd/MM/yyyy'
+            },
+            title: { display: true, text: 'Data da Inscrição', color: '#6b7280' },
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#9ca3af' }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#9ca3af' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { mode: 'index', intersect: false }
+        }
+      });
+    }
+
+    // 2. Areas (Pie with DataLabels)
+    function renderAreas(data) {
+      const counts = groupBy(data, 'area');
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+
+      createChart('chart-areas', 'pie', {
+        labels: Object.keys(counts),
+        datasets: [{
+          data: Object.values(counts),
+          backgroundColor: ['#e9ac15', '#5e1999', '#3b82f6', '#10b981', '#f43f5e', '#8b5cf6'],
+          borderWidth: 0
+        }]
+      }, {
+        plugins: {
+          legend: { position: 'right' },
+          datalabels: {
+            display: true,
+            color: '#fff',
+            font: { weight: 'bold', size: 10 },
+            formatter: (value, ctx) => {
+              let pct = ((value / total) * 100).toFixed(1) + '%';
+              return value + '\n(' + pct + ')';
+            }
+          }
+        }
+      });
+    }
+
+    // 3. Bairros
+    function renderBairros(data) {
+      const counts = groupBy(data, 'bairro');
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      createChart('chart-bairros', 'bar', {
+        labels: sorted.map(s => s[0]),
+        datasets: [{
+          label: 'Inscritos',
+          data: sorted.map(s => s[1]),
+          backgroundColor: '#3b82f6',
+          borderRadius: 4
+        }]
+      }, { indexAxis: 'x' });
+    }
+
+    // 4. Interests
+    function renderInterests(data) {
+      const counts = groupBy(data, 'interesse');
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      createChart('chart-interesses', 'bar', {
+        labels: sorted.map(s => s[0]),
+        datasets: [{
+          label: 'Interessados',
+          data: sorted.map(s => s[1]),
+          backgroundColor: '#10b981',
+          borderRadius: 4
+        }]
+      }, { indexAxis: 'y' });
+    }
+
+    // 5. Origin (Doughnut with DataLabels)
+    function renderOrigem(data) {
+      const counts = groupBy(data, 'origem');
+      const total = Object.values(counts).reduce((a, b) => a + b, 0);
+
+      createChart('chart-origem', 'doughnut', {
+        labels: Object.keys(counts),
+        datasets: [{
+          data: Object.values(counts),
+          backgroundColor: ['#e9ac15', '#5e1999', '#3b82f6', '#10b981', '#f43f5e', '#8b5cf6'],
+          borderWidth: 0
+        }]
+      }, {
+        cutout: '60%',
+        plugins: {
+          legend: { position: 'right' },
+          datalabels: {
+            display: true,
+            color: '#fff',
+            font: { weight: 'bold', size: 10 },
+            formatter: (value, ctx) => {
+              let pct = ((value / total) * 100).toFixed(1) + '%';
+              return value + '\n(' + pct + ')';
+            }
+          }
+        }
+      });
+    }
+
+    initDashboard(); // Start
+
+  </script>
 </body>
+
 </html>
